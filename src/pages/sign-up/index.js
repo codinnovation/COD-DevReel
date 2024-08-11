@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import styles from "../../styles/login/login.module.css";
+import styles from "../../styles/signup/signup.module.css";
 import Head from "next/head";
 import CloseIcon from "@mui/icons-material/Close";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
@@ -12,24 +12,21 @@ function Index() {
   const router = useRouter();
   const [isLinkClicked, setIsLinkClicked] = useState(false);
 
-  function SiginWithEmailPage() {
+  function SigUpWithEmailPage() {
     setIsLinkClicked(true);
     setTimeout(() => {
-      router.push("/login/email");
+      router.push("/sign-up/email");
       setIsLinkClicked(false);
     }, 1500);
   }
 
-  function createAccountPage() {
-    setIsLinkClicked(true);
-    setTimeout(() => {
-      router.push("/sign-up");
-      setIsLinkClicked(false);
-    }, 1500);
-  }
-
-
-
+  function signinPage() {
+   setIsLinkClicked(true);
+   setTimeout(() => {
+     router.push("/login");
+     setIsLinkClicked(false);
+   }, 1500);
+ }
   return (
     <>
       {isLinkClicked && (
@@ -41,7 +38,7 @@ function Index() {
       )}
 
       <Head>
-        <title>COD DevReel - Please Login</title>
+        <title>COD DevReel - Please Create Account</title>
         <meta name="description" content="Welcome To COD DevReel" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
@@ -53,11 +50,11 @@ function Index() {
           </div>
           <div className={styles.loginFormContent}>
             <div className={styles.loginHeader}>
-              <h1>Log in to COD DevReel</h1>
+              <h1>Create Your Account</h1>
             </div>
 
             <div className={styles.loginOptions}>
-              <div className={styles.option} onClick={SiginWithEmailPage}>
+              <div className={styles.option} onClick={SigUpWithEmailPage}>
                 <PersonOutlineIcon className={styles.icon} />
                 <h1>{`Username, email, Use phone`}</h1>
               </div>
@@ -69,8 +66,8 @@ function Index() {
             </div>
 
             <div className={styles.createAccount}>
-              <p>Don&apos;t have account?</p>
-              <p onClick={createAccountPage}>Sign up</p>
+              <p>Already have an account?</p>
+              <p onClick={signinPage}>Log in</p>
             </div>
           </div>
         </div>

@@ -18,9 +18,20 @@
 }
 
 .closeIcon {
+   display: grid;
+   grid-template-columns: 1fr auto;
+}
+
+.closeIcon .iconArrow {
+   margin: 20px;
+   border-radius: 50%;
+   color: #fff;
+   padding: 4px;
+   font-size: 30px;
    display: flex;
-   justify-content: flex-end;
+   justify-content: center;
    align-items: center;
+   cursor: pointer;
 }
 
 .closeIcon .icon {
@@ -30,7 +41,11 @@
    color: #fff;
    padding: 4px;
    font-size: 30px;
-   filter: brightness(65%);
+   filter: brightness(80%);
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   cursor: pointer;
 }
 
 .loginFormContent {
@@ -50,36 +65,64 @@
    font-family: sans-serif;
 }
 
-.loginOptions {
+.loginForm {
    margin-top: 20px;
 }
 
-.loginOptions .option {
+.loginForm .inputField {
+   display: flex;
+   flex-direction: column;
+   align-items: flex-start;
+   justify-content: center;
+   margin-top: 30px;
+}
+
+.loginForm .inputField label {
+   color: #d4d4d4;
+   font-family: sans-serif;
+}
+
+.loginForm .inputField input {
    background-color: #3f3f3f;
+   color: #d4d4d4;
+   border: none;
+   width: 100%;
+   height: 50px;
+   padding-left: 10px;
+   border-radius: 5px;
+   font-family: sans-serif;
+   margin-top: 6px;
+}
+
+.forgetPassword {
    display: flex;
    justify-content: flex-start;
    align-items: center;
-   padding: 10px;
-   margin-top: 20px;
-   cursor: pointer;
-   border-radius: 5px;
+   margin-top: 50px;
 }
 
-.loginOptions .option .icon {
-   color: #d4d4d4;
-   margin-right: 20px;
-}
-
-.loginOptions .option:nth-child(2) .icon {
+.forgetPassword p {
    color: #f85a40;
-   margin-right: 20px;
+   font-family: sans-serif;
+   cursor: pointer;
 }
 
-.loginOptions .option h1 {
-   color: #d4d4d4;
-   font-size: 15px;
-   font-family: sans-serif;
-   font-weight: 100;
+.loginButton {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   margin-top: 20px;
+}
+
+.loginButton button {
+   width: 100%;
+   height: 50px;
+   background-color: #3f3f3f;
+   border: none;
+   border-radius: 5px;
+   color: #868686;
+   font-size: 17px;
+   cursor: pointer;
 }
 
 .createAccount {
@@ -117,20 +160,24 @@
    z-index: 9999;
 }
 
-
 @media(max-width:700px) {
    .loginContent {
-      width: 80%;
+      width: 85%;
+      height: auto;
+   }
+
+   .closeIcon .iconArrow {
+      margin: 20px;
+      font-size: 25px;
    }
 
    .closeIcon .icon {
-      margin: 15px;
-      padding: 4px;
+      margin: 20px;
       font-size: 25px;
    }
 
    .loginFormContent {
-      width: 90%;
+      width: 88%;
    }
 
    .loginHeader h1 {
@@ -138,39 +185,53 @@
       text-align: center;
    }
 
-   .loginOptions {
-      margin-top: 30px;
+   .loginForm {
+      margin-top: 20px;
    }
 
-   .loginOptions .option {
-      padding: 9px;
-      margin-top: 25px;
+   .loginForm .inputField {
+      margin-top: 20px;
    }
 
-   .loginOptions .option .icon {
-      font-size: 20px;
-   }
-
-   .loginOptions .option:nth-child(2) .icon {
-      font-size: 20px;
-   }
-
-   .loginOptions .option h1 {
+   .loginForm .inputField label {
       font-size: 14px;
    }
 
+   .loginForm .inputField input {
+      height: 45px;
+      margin-top: 4px;
+   }
+
+   .forgetPassword {
+      margin-top: 40px;
+   }
+
+   .forgetPassword p {
+      font-size: 14px;
+   }
+
+   .loginButton {
+      margin-top: 10px;
+   }
+
+   .loginButton button {
+      height: 45px;
+      font-size: 15px;
+   }
+
    .createAccount {
-      margin-top: 55px;
-      margin-bottom: 25px;
+      margin-top: 35px;
+      margin-bottom: 30px;
    }
 
    .createAccount p {
-      color: #d4d4d4;
       font-size: 14px;
    }
 
    .createAccount p:nth-child(2) {
       color: red;
-      margin-left: 14px;
+      margin-left: 10px;
+      cursor: pointer;
    }
+
 }
