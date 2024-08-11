@@ -11,6 +11,7 @@ import { googleProvider, auth } from "../../../firebase.config";
 import { signInWithPopup } from "firebase/auth";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer, toast } from "react-toastify";
+import withSession from "@/lib/session";
 
 function Index() {
   const router = useRouter();
@@ -36,12 +37,28 @@ function Index() {
     try {
       const result = await signInWithPopup(auth, googleProvider);
       const user = result.user;
-      toast.success("Account created successfully");
+  
+      // Send user data to the API route to set the session
+      const response = await fetch("/api/googleprovider", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ user: user }),
+      });
+  
+      if (response.ok) {
+        toast.success("Account created successfully");
+        router.push("/");
+      } else {
+        throw new Error("Failed to set session");
+      }
     } catch (error) {
       console.error("Error signing up with Google:", error);
       toast.error("Error creating account");
     }
   };
+  
 
   return (
     <>
