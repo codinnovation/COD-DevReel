@@ -7,6 +7,8 @@ import GoogleIcon from "@mui/icons-material/Google";
 import { useRouter } from "next/router";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
+import { googleProvider, auth } from "../../../firebase.config";
+import { signInWithPopup } from "firebase/auth";
 
 function Index() {
   const router = useRouter();
@@ -28,7 +30,15 @@ function Index() {
     }, 1500);
   }
 
-
+  const signUpWithGoogle = async () => {
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      const user = result.user;
+      console.log("User signed up:", user);
+    } catch (error) {
+      console.error("Error signing up with Google:", error);
+    }
+  };
 
   return (
     <>
@@ -59,10 +69,10 @@ function Index() {
             <div className={styles.loginOptions}>
               <div className={styles.option} onClick={SiginWithEmailPage}>
                 <PersonOutlineIcon className={styles.icon} />
-                <h1>{`Username, email, Use phone`}</h1>
+                <h1>{`Username / email`}</h1>
               </div>
 
-              <div className={styles.option}>
+              <div className={styles.option} onClick={signUpWithGoogle}>
                 <GoogleIcon className={styles.icon} />
                 <h1>Continue with Google</h1>
               </div>

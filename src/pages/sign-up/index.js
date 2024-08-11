@@ -7,6 +7,10 @@ import GoogleIcon from "@mui/icons-material/Google";
 import { useRouter } from "next/router";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
+import { googleProvider, auth } from "../../../firebase.config";
+import { signInWithPopup } from "firebase/auth";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer, toast } from "react-toastify";
 
 function Index() {
   const router = useRouter();
@@ -21,14 +25,27 @@ function Index() {
   }
 
   function signinPage() {
-   setIsLinkClicked(true);
-   setTimeout(() => {
-     router.push("/login");
-     setIsLinkClicked(false);
-   }, 1500);
- }
+    setIsLinkClicked(true);
+    setTimeout(() => {
+      router.push("/login");
+      setIsLinkClicked(false);
+    }, 1500);
+  }
+
+  const signUpWithGoogle = async () => {
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      const user = result.user;
+      toast.success("Account created successfully");
+    } catch (error) {
+      console.error("Error signing up with Google:", error);
+      toast.error("Error creating account");
+    }
+  };
+
   return (
     <>
+      <ToastContainer />
       {isLinkClicked && (
         <div className={styles.loadingContainer}>
           <Box sx={{ display: "flex" }}>
@@ -56,10 +73,10 @@ function Index() {
             <div className={styles.loginOptions}>
               <div className={styles.option} onClick={SigUpWithEmailPage}>
                 <PersonOutlineIcon className={styles.icon} />
-                <h1>{`Username, email, Use phone`}</h1>
+                <h1>{`Username / email`}</h1>
               </div>
 
-              <div className={styles.option}>
+              <div className={styles.option} onClick={signUpWithGoogle}>
                 <GoogleIcon className={styles.icon} />
                 <h1>Continue with Google</h1>
               </div>
