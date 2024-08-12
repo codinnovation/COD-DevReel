@@ -14,9 +14,9 @@ function Index() {
   const [openProfile, setOpenProfile] = useState(false);
   const [isLinkClicked, setIsLinkClicked] = useState(false);
   const [currentUser, setCurrentUser] = useState(NineKPlusOutlined);
-  const router = useRouter()
+  const router = useRouter();
 
-  console.log("current", currentUser)
+  console.log("current", currentUser);
   const handleOpen = () => setOpenProfile(true);
   const handleClose = () => setOpenProfile(false);
 
@@ -29,20 +29,20 @@ function Index() {
   }
 
   useEffect(() => {
-   const fetchUser = async () => {
-     try {
-       const response = await fetch("/api/user");
-       if (response.ok) {
-         const userData = await response.json();
-         setCurrentUser(userData);
-       } 
-     } catch (error) {
-       console.error("Error fetching user data:", error);
-     }
-   };
+    const fetchUser = async () => {
+      try {
+        const response = await fetch("/api/user");
+        if (response.ok) {
+          const userData = await response.json();
+          setCurrentUser(userData);
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
 
-   fetchUser();
- }, []);
+    fetchUser();
+  }, []);
 
   return (
     <>
@@ -68,13 +68,17 @@ function Index() {
 
           <div className={styles.userProfile}>
             <img
-              src={currentUser?.user?.user?.photoURL }
+              src="/profile.jpg"
               className={styles.image}
               alt="profile photo"
               width={900}
               height={900}
               onClick={handleOpen}
             />
+
+            <div className={styles.logoutContainer}>
+              <button>Sign Out</button>
+            </div>
           </div>
         </div>
       </div>
