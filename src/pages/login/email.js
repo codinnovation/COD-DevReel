@@ -6,10 +6,16 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useRouter } from "next/router";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer, toast } from "react-toastify";
 
 function Email() {
   const router = useRouter();
   const [isLinkClicked, setIsLinkClicked] = useState(false);
+  const [userDetails, setUserDetails] = useState({
+    email: "",
+    password: "",
+  });
 
   function loginPage() {
     setIsLinkClicked(true);
@@ -34,6 +40,48 @@ function Email() {
       setIsLinkClicked(false);
     }, 1500);
   }
+
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    setUserDetails((prevUser) => ({
+      ...prevUser,
+      [name]: value,
+    }));
+  };
+
+  const handleLogin = async (event) => {
+    event.preventDefault();
+    setIsLinkClicked(true);
+
+    let data = {
+      email: userDetails.email,
+      password: userDetails.password,
+    };
+
+    try {
+      const response = await fetch("/api/email-login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (response.ok) {
+        toast.success("Log in successfully");
+        setIsLinkClicked(false);
+        console.log(response)
+
+      } else {
+        setIsLinkClicked(false);
+        toast.error("Error Log in account");
+        console.log(response)
+      }
+    } catch (err) {
+      toast.error("Error Log in account", err.message);
+      setIsLinkClicked(false);
+    }
+  };
 
   return (
     <>
@@ -66,16 +114,27 @@ function Email() {
             </div>
 
             <div className={styles.loginForm}>
-              <form>
+              <form onSubmit={handleLogin}>
                 <div className={styles.inputField}>
                   <label>Email Address</label>
-                  <input type="email" placeholder="example@gmail.com" />
+                  <input
+                    type="email"
+                    placeholder="example@gmail.com"
+                    name="email"
+                    value={userDetails.email}
+                    onChange={handleInputChange}
+                  />
                 </div>
 
                 <div className={styles.inputField}>
                   <label>Password</label>
-                  <input type="password" placeholder="password" />
-                </div>
+                  <input
+                    type="password"
+                    placeholder="password"
+                    name="password"
+                    value={userDetails.password}
+                    onChange={handleInputChange}
+                  />                </div>
 
                 <div className={styles.forgetPassword}>
                   <p onClick={forgetPassword}>Forget Password</p>
@@ -94,6 +153,7 @@ function Email() {
           </div>
         </div>
       </div>
+      <ToastContainer/>
     </>
   );
 }
