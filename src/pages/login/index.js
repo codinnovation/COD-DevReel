@@ -34,7 +34,7 @@ function Index() {
     try {
       const result = await signInWithPopup(auth, googleProvider);
       const user = result.user;
-      console.log("User signed up:", user);
+      router.push("/")
     } catch (error) {
       console.error("Error signing up with Google:", error);
     }
