@@ -6,7 +6,6 @@ function Index() {
   return (
     <div>
       <FirstHeader/>
-      <SideBar/>
     </div>
   )
 }
