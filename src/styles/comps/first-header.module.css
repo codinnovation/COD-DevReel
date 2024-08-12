@@ -1,16 +1,18 @@
 .headerContainer {
    background-color: #000;
    width: 100%;
-   height: auto;
+   height: 14vh;
+   position: sticky;
+   top: 0;
 }
 
 .headerContent {
-   width: 98%;
+   width: 90%;
    margin: 0 auto;
    display: grid;
    grid-template-columns: 1fr 1fr 1fr;
    padding: 0px;
-   border-bottom: 1px solid #585858;
+   height: 100%;
 }
 
 .headerName {
@@ -23,10 +25,12 @@
    color: #fff;
    font-family: 900;
    font-family: sans-serif;
+   border: 1px solid #f85a40;
+   padding: 2px;
 }
 
 .headerName h1:nth-child(2) {
-   margin-left: 7px;
+   margin-left: 0px;
    color: #f85a40;
 }
 
@@ -45,7 +49,7 @@
 
 .searchContainer input {
    width: 100%;
-   height: 45px;
+   height: 55px;
    background-color: #585858;
    border: none;
    border-radius: 5px;
@@ -65,6 +69,23 @@
    height: auto;
    border-radius: 50%;
    cursor: pointer;
+}
+
+.logoutContainer {
+   margin-left: 10%;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+}
+
+.logoutContainer button {
+   width: 110px;
+   height: 40px;
+   background: none;
+   border: 1px solid #f85a40;
+   color: #fff;
+   font-weight: 600;
+   font-family: sans-serif;
 }
 
 .modalStyle {
@@ -113,4 +134,34 @@
    height: 100%;
    background-color: rgba(0, 0, 0, 0.8);
    z-index: 9999;
+}
+
+@media (max-width:700px) {
+   .headerContainer {
+      height: 10vh;
+   }
+
+   .headerContent {
+      width: 95%;
+      margin: 0 auto;
+      grid-template-columns: 1fr 1fr;
+   }
+
+   .headerName h1 {
+      font-size: 19px;
+      font-family: 900;
+      padding: 2px;
+   }
+
+   .searchContainer {
+      display: none;
+   }
+
+   .logoutContainer {
+      display: none;
+   }
+
+   .userProfile .image {
+      width: 20%;
+   }
 }

@@ -7,8 +7,7 @@ function Index() {
   return (
     <div>
       <FirstHeader/>
-      <SideBar/>
-      <VideoBody/>
+      <VideoBody />
     </div>
   )
 }
