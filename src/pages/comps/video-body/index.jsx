@@ -7,38 +7,60 @@ import SendIcon from "@mui/icons-material/Send";
 import CommentIcon from "@mui/icons-material/Comment";
 import BookmarksIcon from "@mui/icons-material/Bookmarks";
 import MenuIcon from "@mui/icons-material/Menu";
-import Box from "@mui/material/Box";
-import BottomNavigation from "@mui/material/BottomNavigation";
-import BottomNavigationAction from "@mui/material/BottomNavigationAction";
-import RestoreIcon from "@mui/icons-material/Restore";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import LocationOnIcon from "@mui/icons-material/LocationOn";
+import { ref, get } from "firebase/database";
+import { db } from "../../../../firebase.config";
 
 function VideoShowcase() {
-  const [currentVideoIndex, setCurrentVideoIndex] = useState(1);
-  const [value, setValue] = React.useState(0);
-  const videoSources = ["/video2.mp4", "/video.mp4", "/video3.mp4"];
-  const videoRef = useRef(null); // Reference to the video element
+  const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
+  const [videoSources, setVideoSources] = useState([]);
+  const videoRef = useRef(null);
 
-  const handleNextVideo = () => {
-    setCurrentVideoIndex((prevIndex) => (prevIndex + 1) % videoSources.length);
-  };
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const dbRef = ref(db, "devReelVideos");
+        const response = await get(dbRef);
+        const data = response.val();
 
-  const handlePrevVideo = () => {
-    setCurrentVideoIndex(
-      (prevIndex) => (prevIndex - 1 + videoSources.length) % videoSources.length
-    );
-  };
+        if (data && typeof data === "object") {
+          const dataArray = Object.entries(data).map(([key, value]) => ({
+            key,
+            ...value,
+          }));
+          setVideoSources(dataArray);
+        } else {
+          setVideoSources([]);
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setVideoSources([]);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   useEffect(() => {
     if (videoRef.current) {
-      videoRef.current.load(); // Reload the video element to reflect the new source
+      videoRef.current.load();
     }
   }, [currentVideoIndex]);
 
+  const handleNextVideo = () => {
+    setCurrentVideoIndex((prevIndex) =>
+      prevIndex < videoSources.length - 1 ? prevIndex + 1 : 0
+    );
+  };
+
+  const handlePrevVideo = () => {
+    setCurrentVideoIndex((prevIndex) =>
+      prevIndex > 0 ? prevIndex - 1 : videoSources.length - 1
+    );
+  };
+
   return (
-    <>
-      <div className={styles.videoContainer}>
+    <div className={styles.videoContainer}>
+      {videoSources.length > 0 && (
         <div className={styles.videoContent}>
           <div className={styles.navigateButtons}>
             <KeyboardArrowUpIcon
@@ -59,7 +81,7 @@ function VideoShowcase() {
               autoPlay
               muted
             >
-              <source src={videoSources[currentVideoIndex]} />
+              <source src={videoSources[currentVideoIndex].videoURL} />
             </video>
             <div className={styles.menuIcon}>
               <MenuIcon className={styles.icon} />
@@ -70,34 +92,11 @@ function VideoShowcase() {
             <div className={styles.videoBox}>
               <div className={styles.videoBoxDetails}>
                 <div className={styles.videoBoxHeader}>
-                  <h1>Building E-Commerce Website</h1>
+                  <h1>{videoSources[currentVideoIndex].videoHeader}</h1>
                 </div>
 
                 <div className={styles.videoBoxDes}>
-                  <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-                    do eiusmod tempor incididunt ut labore et dolore magna
-                    aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-                    ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                    Duis aute irure dolor in reprehenderit in voluptate velit
-                    esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
-                    occaecat cupidatat non proident, sunt in culpa qui officia
-                    deserunt mollit anim id est laborum. laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in
-                    reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-                    proident, sunt in culpa qui officia deserunt mollit anim id
-                    est laborum. laboris nisi ut aliquip ex ea commodo
-                    consequat. Duis aute irure dolor in reprehenderit in
-                    voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-                    Excepteur sint occaecat cupidatat non proident, sunt in
-                    culpa qui officia deserunt mollit anim id est laborum.
-                    laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-                    irure dolor in reprehenderit in voluptate velit esse cillum
-                    dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-                    cupidatat non proident, sunt in culpa qui officia deserunt
-                    mollit anim id est laborum.
-                  </p>
+                  <p>{videoSources[currentVideoIndex].videoDescription}</p>
                 </div>
               </div>
             </div>
@@ -136,31 +135,8 @@ function VideoShowcase() {
             </div>
           </div>
         </div>
-      </div>
-      {/* <div className={styles.menuNavigations}>
-        <Box sx={{ width: "auto", margin: "0px", padding: "0" }}>
-          <BottomNavigation
-            showLabels
-            value={value}
-            onChange={(event, newValue) => {
-              setValue(newValue);
-            }}
-          >
-          
-            <BottomNavigationAction
-              label="Next"
-              icon={<KeyboardArrowUpIcon />}
-              onClick={handlePrevVideo}
-            />
-            <BottomNavigationAction
-              label="Prev"
-              icon={<KeyboardArrowDownIcon />}
-              onClick={handleNextVideo}
-            />
-          </BottomNavigation>
-        </Box>
-      </div> */}
-    </>
+      )}
+    </div>
   );
 }
 

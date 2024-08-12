@@ -9,6 +9,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 import { googleProvider, auth } from "../../../firebase.config";
 import { signInWithPopup } from "firebase/auth";
+import withSession from "@/lib/session";
 
 function Index() {
   const router = useRouter();
@@ -34,7 +35,21 @@ function Index() {
     try {
       const result = await signInWithPopup(auth, googleProvider);
       const user = result.user;
-      router.push("/")
+
+      // Send a request to the server to save the user session
+      const response = await fetch("/api/set-session", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ user }),
+      });
+
+      if (response.ok) {
+        router.push("/");
+      } else {
+        console.error("Failed to set session");
+      }
     } catch (error) {
       console.error("Error signing up with Google:", error);
     }
