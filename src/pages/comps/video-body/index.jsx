@@ -4,7 +4,6 @@ import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
 import SendIcon from "@mui/icons-material/Send";
 import CommentIcon from "@mui/icons-material/Comment";
 import BookmarksIcon from "@mui/icons-material/Bookmarks";
-import MenuIcon from "@mui/icons-material/Menu";
 import { ref, get } from "firebase/database";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
@@ -17,8 +16,7 @@ function VideoShowcase() {
   const [videoSources, setVideoSources] = useState([]);
   const [isLinkClicked, setIsLinkClicked] = useState(false);
   const [expandedDescriptions, setExpandedDescriptions] = useState({});
-
-  const videoRef = useRef(null);
+  const videoRefs = useRef([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -50,6 +48,33 @@ function VideoShowcase() {
 
     fetchData();
   }, []);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const videoElement = entry.target;
+            videoElement.play();
+          } else {
+            const videoElement = entry.target;
+            videoElement.pause();
+          }
+        });
+      },
+      { threshold: 0.5 } // Adjust this value to determine when the video starts playing
+    );
+
+    videoRefs.current.forEach((video) => {
+      if (video) observer.observe(video);
+    });
+
+    return () => {
+      videoRefs.current.forEach((video) => {
+        if (video) observer.unobserve(video);
+      });
+    };
+  }, [videoSources]);
 
   const toggleDescription = (index) => {
     setExpandedDescriptions((prev) => ({
@@ -95,6 +120,7 @@ function VideoShowcase() {
 
                   <div className={styles.videoBoxVideo}>
                     <video
+                      ref={(el) => (videoRefs.current[index] = el)}
                       src={data?.videoURL}
                       muted
                       controls
