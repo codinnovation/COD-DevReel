@@ -4,25 +4,48 @@ import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
 import SendIcon from "@mui/icons-material/Send";
 import CommentIcon from "@mui/icons-material/Comment";
 import BookmarksIcon from "@mui/icons-material/Bookmarks";
-import { ref, get } from "firebase/database";
+import { ref, get, update } from "firebase/database";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 import { db } from "../../../../firebase.config";
 import "react-toastify/dist/ReactToastify.css";
-import { ToastContainer, toast } from "react-toastify";
 import FirstHeader from "../first-header";
+import withSession from "@/lib/session";
 
 function VideoShowcase() {
   const [videoSources, setVideoSources] = useState([]);
-  const [isLinkClicked, setIsLinkClicked] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [expandedDescriptions, setExpandedDescriptions] = useState({});
   const videoRefs = useRef([]);
+  const [currentUser, setCurrentUser] = useState(null);
+  const [currentUserEmail, setCurrentUserEmail] = useState(null);
+
+  // Function to sanitize email
+  const sanitizeEmail = (email) => email?.replace(/[^a-zA-Z0-9]/g, "");
 
   useEffect(() => {
-    const fetchData = async () => {
-      setIsLinkClicked(true);
+    // Fetch user data and sanitize email
+    const fetchUser = async () => {
       try {
-        const dbRef = ref(db, "devReelVideos");
+        const response = await fetch("/api/user");
+        if (response.ok) {
+          const userData = await response.json();
+          setCurrentUser(userData);
+          setCurrentUserEmail(sanitizeEmail(userData?.user?.email));
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+
+    fetchUser();
+  }, []);
+
+  useEffect(() => {
+    // Fetch video data from Firebase
+    const fetchData = async () => {
+      try {
+        const dbRef = ref(db, `devReelVideos/${currentUserEmail}`);
         const response = await get(dbRef);
         const data = response.val();
 
@@ -32,17 +55,14 @@ function VideoShowcase() {
             ...value,
           }));
           setVideoSources(dataArray);
-          setIsLinkClicked(false);
         } else {
           setVideoSources([]);
-          toast.error("Error fetching data");
-          setIsLinkClicked(false);
         }
       } catch (error) {
         console.error("Error fetching data:", error);
-        toast.error("Error fetching data:", error);
         setVideoSources([]);
-        setIsLinkClicked(false);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -54,15 +74,13 @@ function VideoShowcase() {
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            const videoElement = entry.target;
-            videoElement.play();
+            entry.target.play();
           } else {
-            const videoElement = entry.target;
-            videoElement.pause();
+            entry.target.pause();
           }
         });
       },
-      { threshold: 0.5 } // Adjust this value to determine when the video starts playing
+      { threshold: 0.5 } // Adjust as needed
     );
 
     videoRefs.current.forEach((video) => {
@@ -84,16 +102,40 @@ function VideoShowcase() {
   };
 
   const truncateText = (text, wordLimit) => {
+    if (!text) return ""; // Handle cases where text is undefined or null
+
     const words = text.split(" ");
-    if (words.length > wordLimit) {
-      return words.slice(0, wordLimit).join(" ") + "...";
+    return words.length > wordLimit
+      ? `${words.slice(0, wordLimit).join(" ")}...`
+      : text;
+  };
+
+  const handleLike = async (videoKey) => {
+    try {
+      const video = videoSources.find((v) => v.key === videoKey);
+      if (!video) return;
+
+      // Increment the like count
+      const newLikeCount = (video.videoLikes || 0) + 1;
+
+      // Update state
+      setVideoSources((prev) =>
+        prev.map((v) =>
+          v.key === videoKey ? { ...v, videoLikes: newLikeCount } : v
+        )
+      );
+
+      // Update in Firebase
+      const videoRef = ref(db, `devReelVideos/${currentUserEmail}/${videoKey}`);
+      await update(videoRef, { videoLikes: newLikeCount });
+    } catch (error) {
+      console.error("Error updating like count:", error);
     }
-    return text;
   };
 
   return (
     <>
-      {isLinkClicked && (
+      {isLoading && (
         <div className={styles.loadingContainer}>
           <Box sx={{ display: "flex", flexDirection: "column" }}>
             <CircularProgress />
@@ -102,7 +144,6 @@ function VideoShowcase() {
         </div>
       )}
       <FirstHeader />
-
       <div className={styles.videoContainer}>
         <div className={styles.videoContent}>
           <div className={styles.videoContentHeader}>
@@ -113,7 +154,7 @@ function VideoShowcase() {
           <div className={styles.videoListContainer}>
             <div className={styles.videoListContent}>
               {videoSources.map((data, index) => (
-                <div className={styles.videoBox} key={index}>
+                <div className={styles.videoBox} key={data.key || index}>
                   <div className={styles.videoBoxHeader}>
                     <h1>{data?.videoHeader}</h1>
                   </div>
@@ -148,7 +189,10 @@ function VideoShowcase() {
                   </div>
 
                   <div className={styles.videoActionsContainer}>
-                    <div className={styles.action}>
+                    <div
+                      className={styles.action}
+                      onClick={() => handleLike(data.key)}
+                    >
                       <ThumbUpOffAltIcon className={styles.icon} />
                       <p>{data?.videoLikes}</p>
                     </div>
@@ -160,7 +204,7 @@ function VideoShowcase() {
 
                     <div className={styles.action}>
                       <BookmarksIcon className={styles.icon} />
-                      <p>230</p>
+                      <p>{data?.videoBookmarks}</p>
                     </div>
 
                     <div className={styles.action}>
@@ -174,9 +218,28 @@ function VideoShowcase() {
           </div>
         </div>
       </div>
-      <ToastContainer />
     </>
   );
 }
 
 export default VideoShowcase;
+
+export const getServerSideProps = withSession(async ({ req, res }) => {
+  const user = req.session.get("user");
+  const currentPath = req.url || "/";
+  if (!user) {
+    return {
+      redirect: {
+        destination: `/login?r=1&redirect=${currentPath}`,
+        permanent: false,
+      },
+    };
+  }
+
+  req.session.set("user", user);
+  await req.session.save();
+
+  return {
+    props: { user },
+  };
+});
