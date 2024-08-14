@@ -11,8 +11,12 @@ import { ToastContainer, toast } from "react-toastify";
 import CircularProgress from "@mui/material/CircularProgress";
 import { push, ref } from "firebase/database";
 import { db } from "../../../../firebase.config";
-import { getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-
+import {
+  getStorage,
+  ref as storageRef,
+  uploadBytesResumable,
+  getDownloadURL,
+} from "firebase/storage";
 
 function Index() {
   const router = useRouter();
@@ -20,11 +24,32 @@ function Index() {
   const [isLinkClicked, setIsLinkClicked] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
   const [openVideoForm, setOpenVideoForm] = useState(false);
-  const [currentuser, setCurrentuser] = useState(null);
+  const [currentUserEmail, setCurrentUserEmail] = useState(null);
+
+
+  console.log(currentUserEmail)
+  // Function to sanitize email
+  const sanitizeEmail = (email) => {
+    return email.replace(/[^a-zA-Z0-9]/g, "");
+  };
 
   useEffect(() => {
-    setCurrentuser(currentUser?.user?.email);
-  }, [currentUser]);
+    const fetchUser = async () => {
+      try {
+        const response = await fetch("/api/user");
+        if (response.ok) {
+          const userData = await response.json();
+          setCurrentUser(userData);
+          const sanitizedEmail = sanitizeEmail(userData.user.email);
+          setCurrentUserEmail(sanitizedEmail);
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+
+    fetchUser();
+  }, []);
 
   const handleOpenVideoForm = () => {
     setOpenVideoForm(true);
@@ -36,7 +61,7 @@ function Index() {
   };
 
   const [videoForm, setVideoForm] = useState({
-    currentUser: currentuser,
+    currentUser: "",
     videoTitle: "",
     videoDescription: "",
     videoURL: "",
@@ -55,19 +80,25 @@ function Index() {
 
   const handleSubmitVideo = async (e) => {
     e.preventDefault();
-  
+
     if (!videoForm.videoURL) {
       toast.error("Please upload a video.");
       return;
     }
-  
+
+    if (!currentUser) {
+      toast.error("User not logged in.");
+      return;
+    }
+
+    const sanitizedEmail = currentUserEmail;
     const storage = getStorage();
     const videoFile = videoForm.videoURL;
     const videoRef = storageRef(storage, `videos/${videoFile.name}`);
-  
+
     // Upload video to Firebase Storage
     const uploadTask = uploadBytesResumable(videoRef, videoFile);
-  
+
     uploadTask.on(
       "state_changed",
       (snapshot) => {
@@ -81,16 +112,18 @@ function Index() {
         // Handle successful upload
         try {
           const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+
           const videoData = {
             ...videoForm,
             videoURL: downloadURL,
+            currentUser: sanitizedEmail,
           };
-  
+
           // Save video information to Realtime Database
-          const videoRefInDB = push(ref(db, "devReelVideos"), videoData);
+          await push(ref(db, `devReelVideos/${sanitizedEmail}`), videoData);
           toast.success("Video has been successfully uploaded");
           setVideoForm({
-            currentUser: currentuser,
+            currentUser: sanitizedEmail,
             videoTitle: "",
             videoDescription: "",
             videoURL: "",
@@ -105,7 +138,6 @@ function Index() {
       }
     );
   };
-  
 
   const handleOpen = () => setOpenProfile(true);
   const handleClose = () => setOpenProfile(false);
@@ -117,22 +149,6 @@ function Index() {
       setIsLinkClicked(false);
     }, 1500);
   }
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const response = await fetch("/api/user");
-        if (response.ok) {
-          const userData = await response.json();
-          setCurrentUser(userData);
-        }
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-      }
-    };
-
-    fetchUser();
-  }, []);
 
   const handleLogout = async (e) => {
     setIsLinkClicked(true);
