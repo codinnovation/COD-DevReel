@@ -71,6 +71,7 @@ function Email() {
         toast.success("Log in successfully");
         setIsLinkClicked(false);
         console.log(response)
+        router.push("/")
 
       } else {
         setIsLinkClicked(false);

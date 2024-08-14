@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import styles from "../../../styles/comps/first-header.module.css";
 import SearchIcon from "@mui/icons-material/Search";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import Image from "next/image";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
@@ -21,7 +22,7 @@ function Index() {
 
   useEffect(() => {
     setCurrentuser(currentUser?.user?.email);
-  }, []);
+  }, [currentUser]);
 
   const handleOpenVideoForm = () => {
     setOpenVideoForm(true);
@@ -31,8 +32,6 @@ function Index() {
   const handleCloseVideoForm = () => {
     setOpenVideoForm(false);
   };
-
- 
 
   const [videoForm, setVideoForm] = useState({
     currentUser: currentuser,
@@ -117,6 +116,7 @@ function Index() {
     }
   };
 
+
   return (
     <>
       {isLinkClicked && (
@@ -140,14 +140,25 @@ function Index() {
           </div>
 
           <div className={styles.userProfile}>
-            <img
-              src={currentUser?.user?.photoURL}
-              className={styles.image}
-              alt="profile photo"
-              width={900}
-              height={900}
-              onClick={handleOpen}
-            />
+            {currentUser?.user?.photoURL ? (
+              <img
+                src={currentUser.user.photoURL}
+                className={styles.image}
+                alt="profile photo"
+                width={900}
+                height={900}
+                onClick={handleOpen}
+              />
+            ) : (
+              <div className={styles.defaultProfile}>
+                <AccountCircleIcon
+                  className={styles.icon}
+                  style={{ color: "#fff" }}
+                  onClick={handleOpen}
+
+                />
+              </div>
+            )}
 
             <div className={styles.logoutContainer}>
               <button onClick={handleLogout}>Sign Out</button>
