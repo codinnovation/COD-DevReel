@@ -96,14 +96,15 @@
 
 .videoBoxVideo {
    width: 95%;
-   height: 100%;
+   height: auto;
    margin: 0px auto;
 }
 
-.videoBoxVideo .object {
+.videoBoxVideo video {
    object-fit: cover;
    height: 100%;
    width: 100%;
+   border-radius: 10px;
 }
 
 .videoBoxVideoDescription {
@@ -233,7 +234,7 @@
       font-size: 15px;
    }
 
-   .videoBoxVideo .object {
+   .videoBoxVideo video {
       object-fit: cover;
       height: 100%;
       width: 100%;
@@ -268,3 +269,4 @@
    }
    
 }
+
