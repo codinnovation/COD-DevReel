@@ -102,7 +102,7 @@
 
 .videoBoxVideo .object {
    object-fit: cover;
-   height: 350px;
+   height: 100%;
    width: 100%;
 }
 
@@ -235,7 +235,7 @@
 
    .videoBoxVideo .object {
       object-fit: cover;
-      height: 300px;
+      height: 100%;
       width: 100%;
    }
 
