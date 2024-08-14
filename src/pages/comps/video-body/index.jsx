@@ -94,11 +94,12 @@ function VideoShowcase() {
                   </div>
 
                   <div className={styles.videoBoxVideo}>
-                    <object
-                      data={data?.videoURL}
+                    <video
+                      src={data?.videoURL}
                       muted
+                      controls
                       className={styles.object}
-                    ></object>
+                    ></video>
                   </div>
 
                   <div className={styles.videoBoxVideoDescription}>
