@@ -20,6 +20,8 @@ function VideoShowcase() {
   const [currentUser, setCurrentUser] = useState(null);
   const [currentUserEmail, setCurrentUserEmail] = useState(null);
 
+  console.log(videoSources)
+
   // Function to sanitize email
   const sanitizeEmail = (email) => email?.replace(/[^a-zA-Z0-9]/g, "");
 
@@ -49,6 +51,8 @@ function VideoShowcase() {
         const response = await get(dbRef);
         const data = response.val();
 
+        console.log(data)
+
         if (data && typeof data === "object") {
           const dataArray = Object.entries(data).map(([key, value]) => ({
             key,
@@ -67,32 +71,9 @@ function VideoShowcase() {
     };
 
     fetchData();
-  }, []);
+  }, [currentUserEmail]);
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.play();
-          } else {
-            entry.target.pause();
-          }
-        });
-      },
-      { threshold: 0.5 } // Adjust as needed
-    );
 
-    videoRefs.current.forEach((video) => {
-      if (video) observer.observe(video);
-    });
-
-    return () => {
-      videoRefs.current.forEach((video) => {
-        if (video) observer.unobserve(video);
-      });
-    };
-  }, [videoSources]);
 
   const toggleDescription = (index) => {
     setExpandedDescriptions((prev) => ({
