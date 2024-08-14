@@ -167,7 +167,7 @@ function Index() {
           <div className={styles.userButtons}>
             <button onClick={handleOpenVideoForm}>Add Video</button>
             <button>Profile</button>
-            <button onClick={signinPage}>Login</button>
+            <button onClick={handleLogout}>Logout</button>
           </div>
         </Box>
       </Modal>

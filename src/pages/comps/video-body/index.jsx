@@ -1,22 +1,28 @@
 import React, { useState, useEffect, useRef } from "react";
 import styles from "../../../styles/comps/video-body.module.css";
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
 import SendIcon from "@mui/icons-material/Send";
 import CommentIcon from "@mui/icons-material/Comment";
 import BookmarksIcon from "@mui/icons-material/Bookmarks";
 import MenuIcon from "@mui/icons-material/Menu";
 import { ref, get } from "firebase/database";
+import CircularProgress from "@mui/material/CircularProgress";
+import Box from "@mui/material/Box";
 import { db } from "../../../../firebase.config";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer, toast } from "react-toastify";
+import FirstHeader from "../first-header";
 
 function VideoShowcase() {
-  const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
   const [videoSources, setVideoSources] = useState([]);
+  const [isLinkClicked, setIsLinkClicked] = useState(false);
+  const [expandedDescriptions, setExpandedDescriptions] = useState({});
+
   const videoRef = useRef(null);
 
   useEffect(() => {
     const fetchData = async () => {
+      setIsLinkClicked(true);
       try {
         const dbRef = ref(db, "devReelVideos");
         const response = await get(dbRef);
@@ -28,115 +34,121 @@ function VideoShowcase() {
             ...value,
           }));
           setVideoSources(dataArray);
+          setIsLinkClicked(false);
         } else {
           setVideoSources([]);
+          toast.error("Error fetching data");
+          setIsLinkClicked(false);
         }
       } catch (error) {
         console.error("Error fetching data:", error);
+        toast.error("Error fetching data:", error);
         setVideoSources([]);
+        setIsLinkClicked(false);
       }
     };
 
     fetchData();
   }, []);
 
-  useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.load();
-    }
-  }, [currentVideoIndex]);
-
-  const handleNextVideo = () => {
-    setCurrentVideoIndex((prevIndex) =>
-      prevIndex < videoSources.length - 1 ? prevIndex + 1 : 0
-    );
+  const toggleDescription = (index) => {
+    setExpandedDescriptions((prev) => ({
+      ...prev,
+      [index]: !prev[index],
+    }));
   };
 
-  const handlePrevVideo = () => {
-    setCurrentVideoIndex((prevIndex) =>
-      prevIndex > 0 ? prevIndex - 1 : videoSources.length - 1
-    );
+  const truncateText = (text, wordLimit) => {
+    const words = text.split(" ");
+    if (words.length > wordLimit) {
+      return words.slice(0, wordLimit).join(" ") + "...";
+    }
+    return text;
   };
 
   return (
-    <div className={styles.videoContainer}>
-      {videoSources.length > 0 && (
+    <>
+      {isLinkClicked && (
+        <div className={styles.loadingContainer}>
+          <Box sx={{ display: "flex", flexDirection: "column" }}>
+            <CircularProgress />
+            <p style={{ color: "#fff" }}>Loading</p>
+          </Box>
+        </div>
+      )}
+      <FirstHeader />
+
+      <div className={styles.videoContainer}>
         <div className={styles.videoContent}>
-          <div className={styles.navigateButtons}>
-            <KeyboardArrowUpIcon
-              className={styles.navBtn2}
-              onClick={handlePrevVideo}
-            />
-            <KeyboardArrowDownIcon
-              className={styles.navBtn1}
-              onClick={handleNextVideo}
-            />
+          <div className={styles.videoContentHeader}>
+            <h1>My Videos</h1>
+            <h1>Following</h1>
           </div>
 
-          <div className={styles.videoBody}>
-            <video
-              ref={videoRef}
-              className={styles.video}
-              controls
-              autoPlay
-              muted
-            >
-              <source src={videoSources[currentVideoIndex].videoURL} />
-            </video>
-            <div className={styles.menuIcon}>
-              <MenuIcon className={styles.icon} />
-            </div>
-          </div>
+          <div className={styles.videoListContainer}>
+            <div className={styles.videoListContent}>
+              {videoSources.map((data, index) => (
+                <div className={styles.videoBox} key={index}>
+                  <div className={styles.videoBoxHeader}>
+                    <h1>{data?.videoHeader}</h1>
+                  </div>
 
-          <div className={styles.videoActions}>
-            <div className={styles.videoBox}>
-              <div className={styles.videoBoxDetails}>
-                <div className={styles.videoBoxHeader}>
-                  <h1>{videoSources[currentVideoIndex].videoHeader}</h1>
-                </div>
+                  <div className={styles.videoBoxVideo}>
+                    <object
+                      data={data?.videoURL}
+                      muted
+                      className={styles.object}
+                    ></object>
+                  </div>
 
-                <div className={styles.videoBoxDes}>
-                  <p>{videoSources[currentVideoIndex].videoDescription}</p>
-                </div>
-              </div>
-            </div>
-            <div className={styles.actions}>
-              <div className={styles.action}>
-                <CommentIcon className={styles.icon} />
-                <div className={styles.des}>
-                  <p>345</p>
-                  <p>Comments</p>
-                </div>
-              </div>
+                  <div className={styles.videoBoxVideoDescription}>
+                    <div className={styles.videoBoxVideoDescriptionHeader}>
+                      <h1>Video Description:</h1>
+                    </div>
+                    <div className={styles.videoBoxVideoDescriptionText}>
+                      <p>
+                        {expandedDescriptions[index]
+                          ? data?.videoDescription
+                          : truncateText(data?.videoDescription, 20)}
+                      </p>
+                      <p
+                        onClick={() => toggleDescription(index)}
+                        className={styles.seeMore}
+                      >
+                        {expandedDescriptions[index] ? "See less" : "See more"}
+                      </p>
+                    </div>
+                  </div>
 
-              <div className={styles.action}>
-                <ThumbUpOffAltIcon className={styles.icon} />
-                <div className={styles.des}>
-                  <p>45</p>
-                  <p>Likes</p>
-                </div>
-              </div>
+                  <div className={styles.videoActionsContainer}>
+                    <div className={styles.action}>
+                      <ThumbUpOffAltIcon className={styles.icon} />
+                      <p>{data?.videoLikes}</p>
+                    </div>
 
-              <div className={styles.action}>
-                <BookmarksIcon className={styles.icon} />
-                <div className={styles.des}>
-                  <p>0</p>
-                  <p>Saved</p>
-                </div>
-              </div>
+                    <div className={styles.action}>
+                      <CommentIcon className={styles.icon} />
+                      <p>{data?.videoComments}</p>
+                    </div>
 
-              <div className={styles.action}>
-                <SendIcon className={styles.icon} />
-                <div className={styles.des}>
-                  <p>3</p>
-                  <p>Shares</p>
+                    <div className={styles.action}>
+                      <BookmarksIcon className={styles.icon} />
+                      <p>230</p>
+                    </div>
+
+                    <div className={styles.action}>
+                      <SendIcon className={styles.icon} />
+                      <p>{data?.videoShares}</p>
+                    </div>
+                  </div>
                 </div>
-              </div>
+              ))}
             </div>
           </div>
         </div>
-      )}
-    </div>
+      </div>
+      <ToastContainer />
+    </>
   );
 }
 
