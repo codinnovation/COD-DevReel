@@ -11,6 +11,8 @@ import { ToastContainer, toast } from "react-toastify";
 import CircularProgress from "@mui/material/CircularProgress";
 import { push, ref } from "firebase/database";
 import { db } from "../../../../firebase.config";
+import { getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+
 
 function Index() {
   const router = useRouter();
@@ -53,17 +55,57 @@ function Index() {
 
   const handleSubmitVideo = async (e) => {
     e.preventDefault();
-
-    try {
-      const videoRef = push(ref(db, "devReelVideos"), videoForm);
-      const videoRefKey = videoRef.key;
-      toast.success("Video has been successfully");
-      return videoRefKey;
-    } catch (err) {
-      console.log(err);
-      toast.error("Error submitting video", err);
+  
+    if (!videoForm.videoURL) {
+      toast.error("Please upload a video.");
+      return;
     }
+  
+    const storage = getStorage();
+    const videoFile = videoForm.videoURL;
+    const videoRef = storageRef(storage, `videos/${videoFile.name}`);
+  
+    // Upload video to Firebase Storage
+    const uploadTask = uploadBytesResumable(videoRef, videoFile);
+  
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {
+        // Progress function, can be used to show progress indicator
+      },
+      (error) => {
+        toast.error("Error uploading video");
+        console.error("Upload error:", error);
+      },
+      async () => {
+        // Handle successful upload
+        try {
+          const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+          const videoData = {
+            ...videoForm,
+            videoURL: downloadURL,
+          };
+  
+          // Save video information to Realtime Database
+          const videoRefInDB = push(ref(db, "devReelVideos"), videoData);
+          toast.success("Video has been successfully uploaded");
+          setVideoForm({
+            currentUser: currentuser,
+            videoTitle: "",
+            videoDescription: "",
+            videoURL: "",
+            videoComments: "",
+            videoLikes: "",
+            videoShares: "",
+          });
+        } catch (error) {
+          toast.error("Error saving video data");
+          console.error("Database error:", error);
+        }
+      }
+    );
   };
+  
 
   const handleOpen = () => setOpenProfile(true);
   const handleClose = () => setOpenProfile(false);
@@ -116,7 +158,6 @@ function Index() {
     }
   };
 
-
   return (
     <>
       {isLinkClicked && (
@@ -155,7 +196,6 @@ function Index() {
                   className={styles.icon}
                   style={{ color: "#fff" }}
                   onClick={handleOpen}
-
                 />
               </div>
             )}
@@ -212,12 +252,15 @@ function Index() {
 
             <div className={styles.field}>
               <input
-                placeholder="Video Url"
+                type="file"
+                accept="video/*"
                 name="videoURL"
-                value={videoForm.videoURL}
-                onChange={handleInputChange}
+                onChange={(e) =>
+                  setVideoForm({ ...videoForm, videoURL: e.target.files[0] })
+                }
               />
             </div>
+
             <button onClick={handleSubmitVideo}>Submit</button>
           </div>
         </Box>
