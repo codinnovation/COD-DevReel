@@ -15,12 +15,13 @@ import { ToastContainer, toast } from "react-toastify";
 import { useRouter } from "next/router";
 
 function Following() {
-   const router = useRouter()
+  const router = useRouter();
   const [videoSources, setVideoSources] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [expandedDescriptions, setExpandedDescriptions] = useState({});
   const [currentUser, setCurrentUser] = useState(null);
   const [currentUserEmail, setCurrentUserEmail] = useState(null);
+
 
   // Function to sanitize email
   const sanitizeEmail = (email) => email?.replace(/[^a-zA-Z0-9]/g, "");
@@ -43,39 +44,39 @@ function Following() {
   }, []);
 
   useEffect(() => {
-   const fetchData = async () => {
-     try {
-       const dbRef = ref(db, `devReelVideos`);
-       const response = await get(dbRef);
-       const data = response.val();
+    const fetchData = async () => {
+      try {
+        const dbRef = ref(db, `devReelVideos`);
+        const response = await get(dbRef);
+        const data = response.val();
 
-       if (data && typeof data === "object") {
-         const dataArray = Object.entries(data).flatMap(([key, value]) => {
-           return Object.entries(value).map(([subKey, subValue]) => ({
-             key: subKey,
-             ...subValue,
-           }));
-         });
+        if (data && typeof data === "object") {
+          const dataArray = Object.entries(data).flatMap(([key, value]) => {
+            return Object.entries(value).map(([subKey, subValue]) => ({
+              key: subKey,
+              ...subValue,
+            }));
+          });
 
-         // Filter out videos where the currentUserEmail matches the one in the video data
-         const filteredVideos = dataArray.filter(
-           (video) => video.currentUser !== currentUserEmail
-         );
+          // Filter out videos where the currentUserEmail matches the one in the video data
+          const filteredVideos = dataArray.filter(
+            (video) => video.currentUser !== currentUserEmail
+          );
 
-         setVideoSources(filteredVideos);
-       } else {
-         setVideoSources([]);
-       }
-     } catch (error) {
-       console.error("Error fetching data:", error);
-       setVideoSources([]);
-     } finally {
-       setIsLoading(false);
-     }
-   };
+          setVideoSources(filteredVideos);
+        } else {
+          setVideoSources([]);
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setVideoSources([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-   fetchData();
- }, [currentUserEmail]);
+    fetchData();
+  }, [currentUserEmail]);
 
   const toggleDescription = (index) => {
     setExpandedDescriptions((prev) => ({
@@ -97,7 +98,10 @@ function Following() {
       const video = videoSources.find((v) => v.key === videoKey);
       if (!video) return;
 
-      const likesRef = ref(db, `devReelVideos/${video.currentUser}/${videoKey}/likes`);
+      const likesRef = ref(
+        db,
+        `devReelVideos/${video.currentUser}/${videoKey}/likes`
+      );
       const likesSnapshot = await get(likesRef);
       const likesData = likesSnapshot.val() || {};
 
@@ -116,7 +120,10 @@ function Following() {
 
       await update(likesRef, { [currentUserEmail]: true });
 
-      const videoRef = ref(db, `devReelVideos/${video.currentUser}/${videoKey}`);
+      const videoRef = ref(
+        db,
+        `devReelVideos/${video.currentUser}/${videoKey}`
+      );
       await update(videoRef, { videoLikes: newLikeCount });
     } catch (error) {
       console.error("Error updating like count:", error);
@@ -137,7 +144,9 @@ function Following() {
       <div className={styles.videoContainer}>
         <div className={styles.videoContent}>
           <div className={styles.videoContentHeader}>
-            <h1 onClick={() => router.push("/comps/video-body/my-videos")}>My Videos</h1>
+            <h1 onClick={() => router.push("/comps/video-body/my-videos")}>
+              My Videos
+            </h1>
             <h1>Following</h1>
           </div>
 
@@ -157,7 +166,7 @@ function Following() {
 
                   <div className={styles.videoBoxVideoDescription}>
                     <div className={styles.videoBoxVideoDescriptionHeader}>
-                      <h1>Video Description:</h1>
+                      <h1>Posted: {data?.currentUser} </h1>
                     </div>
                     <div className={styles.videoBoxVideoDescriptionText}>
                       <p>
