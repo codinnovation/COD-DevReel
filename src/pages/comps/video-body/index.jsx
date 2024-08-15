@@ -11,6 +11,8 @@ import { db } from "../../../../firebase.config";
 import "react-toastify/dist/ReactToastify.css";
 import FirstHeader from "../first-header";
 import withSession from "@/lib/session";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer, toast } from "react-toastify";
 
 function VideoShowcase() {
   const [videoSources, setVideoSources] = useState([]);
@@ -23,7 +25,6 @@ function VideoShowcase() {
   const sanitizeEmail = (email) => email?.replace(/[^a-zA-Z0-9]/g, "");
 
   useEffect(() => {
-    // Fetch user data and sanitize email
     const fetchUser = async () => {
       try {
         const response = await fetch("/api/user");
@@ -70,8 +71,6 @@ function VideoShowcase() {
     fetchData();
   }, [currentUserEmail]);
 
-
-
   const toggleDescription = (index) => {
     setExpandedDescriptions((prev) => ({
       ...prev,
@@ -80,8 +79,7 @@ function VideoShowcase() {
   };
 
   const truncateText = (text, wordLimit) => {
-    if (!text) return ""; // Handle cases where text is undefined or null
-
+    if (!text) return "";
     const words = text.split(" ");
     return words.length > wordLimit
       ? `${words.slice(0, wordLimit).join(" ")}...`
@@ -93,17 +91,29 @@ function VideoShowcase() {
       const video = videoSources.find((v) => v.key === videoKey);
       if (!video) return;
 
-      // Increment the like count
+      const likesRef = ref(
+        db,
+        `devReelVideos/${currentUserEmail}/${videoKey}/likes`
+      );
+      const likesSnapshot = await get(likesRef);
+      const likesData = likesSnapshot.val() || {};
+
+      if (likesData[currentUserEmail]) {
+        console.log("You've already liked this video.");
+        toast.error("You've already liked this video");
+        return;
+      }
+
       const newLikeCount = (video.videoLikes || 0) + 1;
 
-      // Update state
       setVideoSources((prev) =>
         prev.map((v) =>
           v.key === videoKey ? { ...v, videoLikes: newLikeCount } : v
         )
       );
 
-      // Update in Firebase
+      await update(likesRef, { [currentUserEmail]: true });
+
       const videoRef = ref(db, `devReelVideos/${currentUserEmail}/${videoKey}`);
       await update(videoRef, { videoLikes: newLikeCount });
     } catch (error) {
@@ -192,6 +202,7 @@ function VideoShowcase() {
           </div>
         </div>
       </div>
+      <ToastContainer/>
     </>
   );
 }
