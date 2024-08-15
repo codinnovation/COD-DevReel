@@ -16,11 +16,8 @@ function VideoShowcase() {
   const [videoSources, setVideoSources] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [expandedDescriptions, setExpandedDescriptions] = useState({});
-  const videoRefs = useRef([]);
   const [currentUser, setCurrentUser] = useState(null);
   const [currentUserEmail, setCurrentUserEmail] = useState(null);
-
-  console.log(videoSources)
 
   // Function to sanitize email
   const sanitizeEmail = (email) => email?.replace(/[^a-zA-Z0-9]/g, "");
@@ -51,7 +48,7 @@ function VideoShowcase() {
         const response = await get(dbRef);
         const data = response.val();
 
-        console.log(data)
+        console.log(data);
 
         if (data && typeof data === "object") {
           const dataArray = Object.entries(data).map(([key, value]) => ({
@@ -141,13 +138,9 @@ function VideoShowcase() {
                   </div>
 
                   <div className={styles.videoBoxVideo}>
-                    <video
-                      ref={(el) => (videoRefs.current[index] = el)}
-                      src={data?.videoURL}
-                      muted
-                      controls
-                      className={styles.object}
-                    ></video>
+                    <video muted controls preload="auto">
+                      <source src={data?.videoURL} />
+                    </video>
                   </div>
 
                   <div className={styles.videoBoxVideoDescription}>

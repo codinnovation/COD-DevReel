@@ -16,7 +16,6 @@ import {
   uploadBytesResumable,
   getDownloadURL,
 } from "firebase/storage";
-import Image from "next/image";
 
 function Index() {
   const router = useRouter();
