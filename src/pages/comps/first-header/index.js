@@ -3,7 +3,6 @@ import { useRouter } from "next/router";
 import styles from "../../../styles/comps/first-header.module.css";
 import SearchIcon from "@mui/icons-material/Search";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import Image from "next/image";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import "react-toastify/dist/ReactToastify.css";
@@ -17,6 +16,7 @@ import {
   uploadBytesResumable,
   getDownloadURL,
 } from "firebase/storage";
+import Image from "next/image";
 
 function Index() {
   const router = useRouter();
@@ -27,7 +27,6 @@ function Index() {
   const [currentUserEmail, setCurrentUserEmail] = useState(null);
 
 
-  console.log(currentUserEmail)
   // Function to sanitize email
   const sanitizeEmail = (email) => {
     return email.replace(/[^a-zA-Z0-9]/g, "");
@@ -68,6 +67,7 @@ function Index() {
     videoComments: "",
     videoLikes: "",
     videoShares: "",
+    videoViews: "",
   });
 
   const handleInputChange = (e) => {
@@ -199,12 +199,13 @@ function Index() {
           <div className={styles.userProfile}>
             {currentUser?.user?.photoURL ? (
               <img
-                src={currentUser.user.photoURL}
+                src={currentUser?.user?.photoURL}
                 className={styles.image}
                 alt="profile photo"
                 width={900}
                 height={900}
                 onClick={handleOpen}
+                priority
               />
             ) : (
               <div className={styles.defaultProfile}>
