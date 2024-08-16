@@ -13,13 +13,16 @@ import FirstHeader from "../first-header";
 import withSession from "@/lib/session";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer, toast } from "react-toastify";
+import { useRouter } from "next/router";
 
 function VideoShowcase() {
+  const router = useRouter()
   const [videoSources, setVideoSources] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [expandedDescriptions, setExpandedDescriptions] = useState({});
   const [currentUser, setCurrentUser] = useState(null);
   const [currentUserEmail, setCurrentUserEmail] = useState(null);
+
 
   // Function to sanitize email
   const sanitizeEmail = (email) => email?.replace(/[^a-zA-Z0-9]/g, "");
@@ -136,7 +139,7 @@ function VideoShowcase() {
         <div className={styles.videoContent}>
           <div className={styles.videoContentHeader}>
             <h1>My Videos</h1>
-            <h1>Following</h1>
+            <h1 onClick={() => router.push("/comps/video-body/following")}>Following</h1>
           </div>
 
           <div className={styles.videoListContainer}>
