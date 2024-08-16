@@ -22,7 +22,6 @@ function Following() {
   const [currentUser, setCurrentUser] = useState(null);
   const [currentUserEmail, setCurrentUserEmail] = useState(null);
 
-
   // Function to sanitize email
   const sanitizeEmail = (email) => email?.replace(/[^a-zA-Z0-9]/g, "");
 
@@ -159,7 +158,7 @@ function Following() {
                   </div>
 
                   <div className={styles.videoBoxVideo}>
-                    <video muted controls preload="auto">
+                    <video muted controls autoPlay loop>
                       <source src={data?.videoURL} />
                     </video>
                   </div>
