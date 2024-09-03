@@ -1,5 +1,5 @@
 import React from 'react'
-import VideoBody from './video-body/my-videos'
+import VideoBody from '../my-videos'
 
 function Index() {
   return (

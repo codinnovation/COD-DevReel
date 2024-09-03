@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import styles from "../../../styles/comps/video-body.module.css";
+import styles from '@/styles/comps/video-body.module.css'
 import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
 import SendIcon from "@mui/icons-material/Send";
 import CommentIcon from "@mui/icons-material/Comment";
@@ -7,9 +7,9 @@ import BookmarksIcon from "@mui/icons-material/Bookmarks";
 import { ref, get, update } from "firebase/database";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
-import { db } from "../../../../firebase.config";
+import { db } from "../../firebase.config";
 import "react-toastify/dist/ReactToastify.css";
-import FirstHeader from "../first-header";
+import FirstHeader from "./comps/first-header";
 import withSession from "@/lib/session";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer, toast } from "react-toastify";
@@ -139,7 +139,7 @@ function VideoShowcase() {
         <div className={styles.videoContent}>
           <div className={styles.videoContentHeader}>
             <h1>My Videos</h1>
-            <h1 onClick={() => router.push("/comps/video-body/following")}>Following</h1>
+            <h1 onClick={() => router.push("/following")}>Following</h1>
           </div>
 
           <div className={styles.videoListContainer}>
