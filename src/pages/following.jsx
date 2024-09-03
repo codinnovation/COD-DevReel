@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import styles from "../../../styles/comps/following.module.css";
+import styles from '@/styles/comps/video-body.module.css'
 import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
 import SendIcon from "@mui/icons-material/Send";
 import CommentIcon from "@mui/icons-material/Comment";
@@ -7,12 +7,15 @@ import BookmarksIcon from "@mui/icons-material/Bookmarks";
 import { ref, get, update } from "firebase/database";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
-import { db } from "../../../../firebase.config";
+import { db } from "../../firebase.config";
 import "react-toastify/dist/ReactToastify.css";
-import FirstHeader from "../first-header";
+import FirstHeader from "../pages/comps/first-header";
 import withSession from "@/lib/session";
 import { ToastContainer, toast } from "react-toastify";
 import { useRouter } from "next/router";
+import 'video.js/dist/video-js.css';
+import videojs from 'video.js';
+import ReactPlayer from "react-player";
 
 function Following() {
   const router = useRouter();
@@ -143,7 +146,7 @@ function Following() {
       <div className={styles.videoContainer}>
         <div className={styles.videoContent}>
           <div className={styles.videoContentHeader}>
-            <h1 onClick={() => router.push("/comps/video-body/my-videos")}>
+            <h1 onClick={() => router.push("/my-videos")}>
               My Videos
             </h1>
             <h1>Following</h1>
@@ -158,10 +161,14 @@ function Following() {
                   </div>
 
                   <div className={styles.videoBoxVideo}>
-                    <video muted controls autoPlay loop>
-                      <source src={data?.videoURL} />
-                    </video>
-                  </div>
+                    <ReactPlayer
+                      url={data?.videoURL}
+                      controls={true} // Show player controls
+                      width='100%'
+                      style={{margin: '0 auto'}}
+                      playing={false} // Auto-play the video
+
+                    />                  </div>
 
                   <div className={styles.videoBoxVideoDescription}>
                     <div className={styles.videoBoxVideoDescriptionHeader}>
