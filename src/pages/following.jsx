@@ -14,6 +14,8 @@ import FirstHeader from "../pages/comps/first-header";
 import withSession from "@/lib/session";
 import { ToastContainer, toast } from "react-toastify";
 import { useRouter } from "next/router";
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ReactPlayer from "react-player";
 
 function Following() {
