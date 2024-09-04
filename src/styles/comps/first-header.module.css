@@ -1,167 +1,167 @@
 .headerContainer {
-   background-color: #000;
-   width: 100%;
-   height: 14vh;
-   position: sticky;
-   top: 0;
+  background-color: #000;
+  width: 100%;
+  height: 14vh;
+  position: sticky;
+  top: 0;
 }
 
 .headerContent {
-   width: 80%;
-   margin: 0 auto;
-   display: grid;
-   grid-template-columns: 1fr 1fr 1fr;
-   padding: 0px;
-   height: 100%;
+  width: 80%;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  padding: 0px;
+  height: 100%;
 }
 
 .headerName {
-   display: flex;
-   justify-content: flex-start;
-   align-items: center;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
 }
 
 .headerName h1 {
-   color: #fff;
-   font-family: 900;
-   font-family: sans-serif;
-   border: 1px solid #f85a40;
-   padding: 2px;
+  color: #fff;
+  font-family: 900;
+  font-family: sans-serif;
+  border: 1px solid #f85a40;
+  padding: 2px;
+  font-size: 1.8em;
 }
 
 .headerName h1:nth-child(2) {
-   margin-left: 0px;
-   color: #f85a40;
+  margin-left: 0px;
+  color: #f85a40;
 }
 
-
 .searchContainer {
-   display: flex;
-   justify-content: center;
-   align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .searchContainer .icon {
-   color: #fff;
-   position: relative;
-   right: 40px;
+  color: #fff;
+  position: relative;
+  right: 40px;
 }
 
 .searchContainer input {
-   width: 100%;
-   height: 55px;
-   background-color: #585858;
-   border: none;
-   border-radius: 5px;
-   padding-left: 10px;
-   color: #fff;
-   position: relative;
+  width: 100%;
+  height: 55px;
+  background-color: #484848;
+  border: none;
+  border-radius: 5px;
+  padding-left: 10px;
+  color: #fff;
+  position: relative;
 }
 
 .userProfile {
-   display: flex;
-   justify-content: flex-end;
-   align-items: center;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
 }
 
 .userProfile .image {
-   width: 10%;
-   height: auto;
-   border-radius: 50%;
-   cursor: pointer;
+  width: 10%;
+  height: auto;
+  border-radius: 50%;
+  cursor: pointer;
 }
 
 .logoutContainer {
-   margin-left: 10%;
-   display: flex;
-   justify-content: center;
-   align-items: center;
+  margin-left: 10%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .logoutContainer button {
-   width: 110px;
-   height: 40px;
-   background: none;
-   border: 1px solid #f85a40;
-   color: #fff;
-   font-weight: 600;
-   font-family: sans-serif;
+  width: 110px;
+  height: 40px;
+  background: none;
+  border: 1px solid #f85a40;
+  color: #fff;
+  font-weight: 600;
+  font-family: sans-serif;
 }
 
 .modalStyle {
-   position: absolute;
-   top: 50%;
-   left: 50%;
-   transform: translate(-50%, -50%);
-   width: auto;
-   background-color: white;
-   box-shadow: 0px 0px 30px #008374;
-   box-shadow: 24;
-   padding: 16px;
-   border-radius: 5px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: auto;
+  background-color: white;
+  box-shadow: 0px 0px 30px #008374;
+  box-shadow: 24;
+  padding: 16px;
+  border-radius: 5px;
 }
 
 .modalStyle h2 {
-   font-family: sans-serif;
-   font-size: 23px;
+  font-family: sans-serif;
+  font-size: 23px;
 }
 
 .modalStyle .userButtons {
-   display: flex;
-   flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .modalStyle .userButtons button {
-   width: 100%;
-   height: 30px;
-   margin-top: 20px;
-   background-color: #dddcdcc2;
-   border: none;
-   color: #f85a40;
-   font-weight: 700;
-   cursor: pointer;
+  width: 100%;
+  height: 30px;
+  margin-top: 20px;
+  background-color: #dddcdcc2;
+  border: none;
+  color: #f85a40;
+  font-weight: 700;
+  cursor: pointer;
 }
 
 .loadingContainer {
-   display: flex;
-   align-items: center;
-   justify-content: center;
-   flex-direction: column;
-   position: fixed;
-   top: 0;
-   left: 0;
-   width: 100%;
-   height: 100%;
-   background-color: rgba(0, 0, 0, 0.8);
-   z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  z-index: 9999;
 }
 
-@media (max-width:700px) {
-   .headerContainer {
-      height: 10vh;
-   }
+@media (max-width: 700px) {
+  .headerContainer {
+    height: 10vh;
+  }
 
-   .headerContent {
-      width: 95%;
-      margin: 0 auto;
-      grid-template-columns: 1fr 1fr;
-   }
+  .headerContent {
+    width: 95%;
+    margin: 0 auto;
+    grid-template-columns: 1fr 1fr;
+  }
 
-   .headerName h1 {
-      font-size: 19px;
-      font-family: 900;
-      padding: 2px;
-   }
+  .headerName h1 {
+    font-size: 19px;
+    font-family: 900;
+    padding: 2px;
+  }
 
-   .searchContainer {
-      display: none;
-   }
+  .searchContainer {
+    display: none;
+  }
 
-   .logoutContainer {
-      display: none;
-   }
+  .logoutContainer {
+    display: none;
+  }
 
-   .userProfile .image {
-      width: 20%;
-   }
+  .userProfile .image {
+    width: 20%;
+  }
 }

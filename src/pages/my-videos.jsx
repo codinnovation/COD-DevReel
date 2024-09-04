@@ -3,8 +3,7 @@ import styles from '@/styles/comps/video-body.module.css'
 import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
 import SendIcon from "@mui/icons-material/Send";
 import CommentIcon from "@mui/icons-material/Comment";
-import BookmarksIcon from "@mui/icons-material/Bookmarks";
-import { ref, get, update } from "firebase/database";
+import DownloadIcon from '@mui/icons-material/Download'; import { ref, get, update } from "firebase/database";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 import { db } from "../../firebase.config";
@@ -14,6 +13,9 @@ import withSession from "@/lib/session";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer, toast } from "react-toastify";
 import { useRouter } from "next/router";
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+
 
 function VideoShowcase() {
   const router = useRouter()
@@ -144,68 +146,43 @@ function VideoShowcase() {
 
           <div className={styles.videoListContainer}>
             <div className={styles.videoListContent}>
-              {videoSources.map((data, index) => (
-                <div className={styles.videoBox} key={data.key || index}>
-                  <div className={styles.videoBoxHeader}>
-                    <h1>{data?.videoHeader}</h1>
-                  </div>
-
-                  <div className={styles.videoBoxVideo}>
-                    <video muted controls preload="auto">
-                      <source src={data?.videoURL} />
-                    </video>
-                  </div>
-
-                  <div className={styles.videoBoxVideoDescription}>
-                    <div className={styles.videoBoxVideoDescriptionHeader}>
-                      <h1>Video Description:</h1>
-                    </div>
-                    <div className={styles.videoBoxVideoDescriptionText}>
-                      <p>
-                        {expandedDescriptions[index]
-                          ? data?.videoDescription
-                          : truncateText(data?.videoDescription, 20)}
-                      </p>
-                      <p
-                        onClick={() => toggleDescription(index)}
-                        className={styles.seeMore}
-                      >
-                        {expandedDescriptions[index] ? "See less" : "See more"}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className={styles.videoActionsContainer}>
-                    <div
-                      className={styles.action}
-                      onClick={() => handleLike(data.key)}
-                    >
-                      <ThumbUpOffAltIcon className={styles.icon} />
-                      <p>{data?.videoLikes}</p>
-                    </div>
-
-                    <div className={styles.action}>
-                      <CommentIcon className={styles.icon} />
-                      <p>{data?.videoComments}</p>
-                    </div>
-
-                    <div className={styles.action}>
-                      <BookmarksIcon className={styles.icon} />
-                      <p>{data?.videoBookmarks}</p>
-                    </div>
-
-                    <div className={styles.action}>
-                      <SendIcon className={styles.icon} />
-                      <p>{data?.videoShares}</p>
-                    </div>
-                  </div>
+              <div className={styles.videoNavigation}>
+                <div className={styles.arrowButton}>
+                  <ArrowForwardIcon className={styles.icon} />
                 </div>
-              ))}
+
+                <div className={styles.arrowButton}>
+                  <ArrowBackIcon className={styles.icon} />
+                </div>
+              </div>
+
+
+              <div className={styles.videoBodyContainer}>
+                <video src="/video.mp4"></video>
+
+              </div>
+
+
+              <div className={styles.videoActionsContainer}>
+                <div className={styles.action}>
+                  <ThumbUpOffAltIcon className={styles.icon} />
+                  <p>99 Likes</p>
+                </div>
+
+                <div className={styles.action}>
+                  <CommentIcon className={styles.icon} />
+                  <p>99 Comments</p>
+                </div>
+
+                <div className={styles.action}>
+                  <DownloadIcon className={styles.icon} />
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
-      <ToastContainer/>
+      <ToastContainer />
     </>
   );
 }
