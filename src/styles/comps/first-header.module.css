@@ -157,7 +157,9 @@
     display: none;
   }
 
-
+  .logoutContainer {
+    display: none;
+  }
 
   .userProfile .image {
     width: 20%;
