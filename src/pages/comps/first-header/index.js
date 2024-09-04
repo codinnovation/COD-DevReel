@@ -210,8 +210,7 @@ function Index() {
                 <AccountCircleIcon
                   className={styles.icon}
                   style={{ color: "#fff", fontSize: "50px" }}
-                  onClick={handleOpen}
-                />
+                  onClick={() => setOpenProfile(true)}                />
               </div>
             )}
 

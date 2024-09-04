@@ -118,6 +118,8 @@ function VideoShowcase() {
     );
   };
 
+  const currentVideo = videoSources[currentVideoIndex];
+
   return (
     <>
       {isLoading && (
@@ -137,8 +139,8 @@ function VideoShowcase() {
           </div>
 
           <div className={styles.videoListContainer}>
-            {videoSources.map((data, index) => (
-              <div className={styles.videoListContent} key={index}>
+            {currentVideo && (
+              <div className={styles.videoListContent} key={currentVideo.key}>
                 <div className={styles.videoNavigation}>
                   <div className={styles.arrowButton} onClick={handlePreviousVideo}>
                     <ArrowBackIcon className={styles.icon} />
@@ -151,7 +153,7 @@ function VideoShowcase() {
 
                 <div className={styles.videoBodyContainer}>
                   <video
-                    src={data.videoURL}
+                    src={currentVideo.videoURL}
                     controls
                     autoPlay
                     loop
@@ -160,14 +162,14 @@ function VideoShowcase() {
                 </div>
 
                 <div className={styles.videoActionsContainer}>
-                  <div className={styles.action} onClick={() => handleLike(data.key)}>
+                  <div className={styles.action} onClick={() => handleLike(currentVideo.key)}>
                     <ThumbUpOffAltIcon className={styles.icon} />
-                    <p>{data.videoLikes || 0} Likes</p>
+                    <p>{currentVideo.videoLikes || 0} Likes</p>
                   </div>
 
                   <div className={styles.action}>
                     <CommentIcon className={styles.icon} />
-                    <p>{data.videoComments || 0} Comments</p> {/* Update this to display actual comment count if available */}
+                    <p>{currentVideo.videoComments || 0} Comments</p> {/* Update this to display actual comment count if available */}
                   </div>
 
                   <div className={styles.action}>
@@ -175,7 +177,7 @@ function VideoShowcase() {
                   </div>
                 </div>
               </div>
-            ))}
+            )}
           </div>
         </div>
       </div>
