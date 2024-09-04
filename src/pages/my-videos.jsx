@@ -1,30 +1,27 @@
-import React, { useState, useEffect, useRef } from "react";
-import styles from '@/styles/comps/video-body.module.css'
+import React, { useState, useEffect } from "react";
+import styles from '@/styles/comps/video-body.module.css';
 import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
-import SendIcon from "@mui/icons-material/Send";
 import CommentIcon from "@mui/icons-material/Comment";
-import DownloadIcon from '@mui/icons-material/Download'; import { ref, get, update } from "firebase/database";
+import DownloadIcon from "@mui/icons-material/Download";
+import { ref, get, update } from "firebase/database";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 import { db } from "../../firebase.config";
 import "react-toastify/dist/ReactToastify.css";
 import FirstHeader from "./comps/first-header";
 import withSession from "@/lib/session";
-import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer, toast } from "react-toastify";
 import { useRouter } from "next/router";
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
-
 function VideoShowcase() {
-  const router = useRouter()
+  const router = useRouter();
   const [videoSources, setVideoSources] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [expandedDescriptions, setExpandedDescriptions] = useState({});
   const [currentUser, setCurrentUser] = useState(null);
   const [currentUserEmail, setCurrentUserEmail] = useState(null);
-
+  const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
 
   // Function to sanitize email
   const sanitizeEmail = (email) => email?.replace(/[^a-zA-Z0-9]/g, "");
@@ -54,8 +51,6 @@ function VideoShowcase() {
         const response = await get(dbRef);
         const data = response.val();
 
-        console.log(data);
-
         if (data && typeof data === "object") {
           const dataArray = Object.entries(data).map(([key, value]) => ({
             key,
@@ -75,21 +70,6 @@ function VideoShowcase() {
 
     fetchData();
   }, [currentUserEmail]);
-
-  const toggleDescription = (index) => {
-    setExpandedDescriptions((prev) => ({
-      ...prev,
-      [index]: !prev[index],
-    }));
-  };
-
-  const truncateText = (text, wordLimit) => {
-    if (!text) return "";
-    const words = text.split(" ");
-    return words.length > wordLimit
-      ? `${words.slice(0, wordLimit).join(" ")}...`
-      : text;
-  };
 
   const handleLike = async (videoKey) => {
     try {
@@ -126,6 +106,18 @@ function VideoShowcase() {
     }
   };
 
+  const handleNextVideo = () => {
+    setCurrentVideoIndex((prevIndex) =>
+      prevIndex < videoSources.length - 1 ? prevIndex + 1 : 0
+    );
+  };
+
+  const handlePreviousVideo = () => {
+    setCurrentVideoIndex((prevIndex) =>
+      prevIndex > 0 ? prevIndex - 1 : videoSources.length - 1
+    );
+  };
+
   return (
     <>
       {isLoading && (
@@ -145,40 +137,45 @@ function VideoShowcase() {
           </div>
 
           <div className={styles.videoListContainer}>
-            <div className={styles.videoListContent}>
-              <div className={styles.videoNavigation}>
-                <div className={styles.arrowButton}>
-                  <ArrowForwardIcon className={styles.icon} />
+            {videoSources.map((data, index) => (
+              <div className={styles.videoListContent} key={index}>
+                <div className={styles.videoNavigation}>
+                  <div className={styles.arrowButton} onClick={handlePreviousVideo}>
+                    <ArrowBackIcon className={styles.icon} />
+                  </div>
+
+                  <div className={styles.arrowButton} onClick={handleNextVideo}>
+                    <ArrowForwardIcon className={styles.icon} />
+                  </div>
                 </div>
 
-                <div className={styles.arrowButton}>
-                  <ArrowBackIcon className={styles.icon} />
+                <div className={styles.videoBodyContainer}>
+                  <video
+                    src={data.videoURL}
+                    controls
+                    autoPlay
+                    loop
+                    playsInline
+                  />
+                </div>
+
+                <div className={styles.videoActionsContainer}>
+                  <div className={styles.action} onClick={() => handleLike(data.key)}>
+                    <ThumbUpOffAltIcon className={styles.icon} />
+                    <p>{data.videoLikes || 0} Likes</p>
+                  </div>
+
+                  <div className={styles.action}>
+                    <CommentIcon className={styles.icon} />
+                    <p>{data.videoComments || 0} Comments</p> {/* Update this to display actual comment count if available */}
+                  </div>
+
+                  <div className={styles.action}>
+                    <DownloadIcon className={styles.icon} />
+                  </div>
                 </div>
               </div>
-
-
-              <div className={styles.videoBodyContainer}>
-                <video src="/video.mp4"></video>
-
-              </div>
-
-
-              <div className={styles.videoActionsContainer}>
-                <div className={styles.action}>
-                  <ThumbUpOffAltIcon className={styles.icon} />
-                  <p>99 Likes</p>
-                </div>
-
-                <div className={styles.action}>
-                  <CommentIcon className={styles.icon} />
-                  <p>99 Comments</p>
-                </div>
-
-                <div className={styles.action}>
-                  <DownloadIcon className={styles.icon} />
-                </div>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </div>

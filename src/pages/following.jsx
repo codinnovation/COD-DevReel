@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import styles from '@/styles/comps/video-body.module.css';
 import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
 import SendIcon from "@mui/icons-material/Send";
-import DownloadIcon from '@mui/icons-material/Download';
 import CommentIcon from "@mui/icons-material/Comment";
 import BookmarksIcon from "@mui/icons-material/Bookmarks";
 import { ref, get, update } from "firebase/database";
@@ -14,8 +13,6 @@ import FirstHeader from "../pages/comps/first-header";
 import withSession from "@/lib/session";
 import { ToastContainer, toast } from "react-toastify";
 import { useRouter } from "next/router";
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ReactPlayer from "react-player";
 
 function Following() {
@@ -144,46 +141,60 @@ function Following() {
         </div>
       )}
       <FirstHeader />
-      <div className={styles.videoContainer}>
-        <div className={styles.videoContent}>
-          <div className={styles.videoContentHeader}>
-            <h1>My Videos</h1>
-            <h1 onClick={() => router.push("/following")}>Following</h1>
-          </div>
-
-          <div className={styles.videoListContainer}>
-            <div className={styles.videoListContent}>
-              <div className={styles.videoNavigation}>
-                <div className={styles.arrowButton}>
-                  <ArrowForwardIcon className={styles.icon} />
+      <div className={styles.videoScrollContainer}>
+        <div className={styles.videoListContainer}>
+          {videoSources.slice.map((data, index) => (
+            <div className={styles.videoItem} key={data.key || index}>
+              <div className={styles.videoContent}>
+                <ReactPlayer
+                  url={data?.videoURL}
+                  playing
+                  loop
+                  muted
+                  controls="true"
+                  width="100%"
+                  height="100%"
+                  style={{ objectFit: 'cover' }}
+                />
+                <div className={styles.videoDescription}>
+                  <div className={styles.videoDescriptionHeader}>
+                    <h1>Posted by {data?.currentUser}</h1>
+                  </div>
+                  <div className={styles.videoDescriptionText}>
+                    <p>
+                      {expandedDescriptions[index]
+                        ? data?.videoDescription
+                        : truncateText(data?.videoDescription, 20)}
+                    </p>
+                    <p
+                      onClick={() => toggleDescription(index)}
+                      className={styles.seeMore}
+                    >
+                      {expandedDescriptions[index] ? "See less" : "See more"}
+                    </p>
+                  </div>
                 </div>
-
-                <div className={styles.arrowButton}>
-                  <ArrowBackIcon className={styles.icon} />
-                </div>
-              </div>
-
-
-              <div className={styles.videoBodyContainer}></div>
-
-
-              <div className={styles.videoActionsContainer}>
-                <div className={styles.action}>
-                  <ThumbUpOffAltIcon className={styles.icon} />
-                  <p>99 Likes</p>
-                </div>
-
-                <div className={styles.action}>
-                  <CommentIcon className={styles.icon} />
-                  <p>99 Comments</p>
-                </div>
-
-                <div className={styles.action}>
-                  <DownloadIcon className={styles.icon} />
+                <div className={styles.videoActions}>
+                  <div className={styles.action} onClick={() => handleLike(data.key)}>
+                    <ThumbUpOffAltIcon className={styles.icon} />
+                    <p>{data?.videoLikes}</p>
+                  </div>
+                  <div className={styles.action}>
+                    <CommentIcon className={styles.icon} />
+                    <p>{data?.videoComments}</p>
+                  </div>
+                  <div className={styles.action}>
+                    <BookmarksIcon className={styles.icon} />
+                    <p>{data?.videoBookmarks}</p>
+                  </div>
+                  <div className={styles.action}>
+                    <SendIcon className={styles.icon} />
+                    <p>{data?.videoShares}</p>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          ))}
         </div>
       </div>
       <ToastContainer />

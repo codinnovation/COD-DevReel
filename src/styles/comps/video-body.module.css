@@ -112,7 +112,8 @@
   }
 
   .videoContent {
-    width: 100%;
+    width: 95%;
+    margin: 0 auto;
   }
 
   .videoListContent {
@@ -193,6 +194,7 @@
   }
 
   .videoBodyContainer {
-    height: 100%;
+    height: 85vh;
+    margin-top: 5px;
   }
 }
