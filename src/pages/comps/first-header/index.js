@@ -25,7 +25,6 @@ function Index() {
   const [openVideoForm, setOpenVideoForm] = useState(false);
   const [currentUserEmail, setCurrentUserEmail] = useState(null);
 
-
   // Function to sanitize email
   const sanitizeEmail = (email) => {
     return email.replace(/[^a-zA-Z0-9]/g, "");
@@ -210,7 +209,7 @@ function Index() {
               <div className={styles.defaultProfile}>
                 <AccountCircleIcon
                   className={styles.icon}
-                  style={{ color: "#fff" }}
+                  style={{ color: "#fff", fontSize: "50px" }}
                   onClick={handleOpen}
                 />
               </div>
