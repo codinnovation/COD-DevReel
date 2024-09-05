@@ -205,6 +205,15 @@ function Following() {
                   <DownloadIcon className={styles.icon} />
                 </div>
               </div>
+              <div className={styles.videoDescriptions}>
+                  <div className={styles.videoDescriptionsHeader}>
+                    <h1>{currentVideo?.videoHeader}</h1>
+                  </div>
+
+                  <div className={styles.videoDescriptionsText}>
+                    <p>{currentVideo?.videoDescription}</p>
+                  </div>
+                </div>
             </div>
           )}
         </div>
