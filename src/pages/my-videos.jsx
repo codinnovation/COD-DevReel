@@ -8,7 +8,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 import { db } from "../../firebase.config";
 import "react-toastify/dist/ReactToastify.css";
-import FirstHeader from "./comps/first-header";
+import FirstHeader from "./first-header";
 import withSession from "@/lib/session";
 import { ToastContainer, toast } from "react-toastify";
 import { useRouter } from "next/router";
@@ -124,9 +124,9 @@ function VideoShowcase() {
     <>
       {isLoading && (
         <div className={styles.loadingContainer}>
-          <Box sx={{ display: "flex", flexDirection: "column" }}>
+          <Box>
             <CircularProgress />
-            <p style={{ color: "#fff" }}>Loading</p>
+            <p style={{ color: "#fff" }}>Loading Videos</p>
           </Box>
         </div>
       )}
@@ -158,6 +158,7 @@ function VideoShowcase() {
                     autoPlay
                     loop
                     playsInline
+                    muted
                   />
                 </div>
 

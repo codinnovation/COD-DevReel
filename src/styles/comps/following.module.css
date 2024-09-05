@@ -1,272 +1,216 @@
 .videoContainer {
-   width: 100%;
    height: 86vh;
-   background-color: #000;
-}
-
-
-.videoContent {
+ }
+ 
+ .videoContent {
    width: 80%;
    margin: 0 auto;
-}
-
-.videoContentHeader {
+ }
+ 
+ .videoContentHeader {
    display: flex;
    justify-content: flex-start;
    align-items: center;
-}
-
-.videoContentHeader h1 {
-   color: #b0b0b0;
-   font-family: sans-serif;
-   font-size: 22px;
-   margin-right: 10px;
-}
-
-.videoContentHeader h1:nth-child(2) {
-   color: #008374;
+ }
+ 
+ .videoContentHeader h1 {
+   color: #fff;
+   font-size: 1.3em;
+ }
+ 
+ .videoContentHeader h1:nth-child(2) {
+   margin-left: 20px;
    border-bottom: 2px solid #f85a40;
-}
-
-.videoListContainer {
+ }
+ 
+ .videoListContainer {
    height: 100%;
+ }
+ 
+ .videoListContent {
+   display: grid;
+   grid-template-columns: 1fr 1fr 1fr;
+   gap: 50px;
+ }
+ 
+ .videoNavigation {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   flex-direction: column;
+   color: #fff;
+   height: 100%;
+ }
+ 
+ .videoNavigation .arrowButton {
+   background-color: #f85a40;
+   margin-top: 10%;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   border-radius: 50%;
+   padding: 10px;
+   cursor: pointer;
+ }
+ 
+ .videoNavigation .arrowButton .icon {
+   font-size: 4em;
+ }
+ 
+ .videoBodyContainer {
+   height: 80vh;
    width: 100%;
    overflow: hidden;
-}
-
-.videoListContent {
-   height: 80vh;
-   width: 50%;
-   margin: 10px auto;
-   overflow-y: scroll;
-}
-
-.videoListContent::-webkit-scrollbar {
-   width: 5px;
-   /* Set the width of the scrollbar */
-}
-
-.videoListContent::-webkit-scrollbar-thumb {
-   background-color: darkgrey;
-   border-radius: 10px;
-}
-
-.videoBox {
-   width: 80%;
-   margin: 1% auto;
-   height: auto;
-   box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.9);
-   border-radius: 10px;
-   padding: 15px;
-   margin-bottom: 10%;
-   transition: transform 0.3s ease;
-}
-
-.videoBox:hover {
-   animation: popForward 0.3s ease-in-out forwards;
-}
-
-@keyframes popForward {
-   0% {
-      transform: scale(1);
-   }
-
-   50% {
-      transform: scale(1.1);
-   }
-
-   100% {
-      transform: scale(1);
-   }
-}
-
-.videoBoxHeader {
    display: flex;
-   justify-content: flex-start;
+   justify-content: center;
    align-items: center;
-   width: 95%;
-   margin: 8px auto;
-}
-
-.videoBoxHeader h1 {
-   color: #f85a40;
-   font-size: 19px;
-   font-family: sans-serif;
-}
-
-.videoBoxVideo {
-   width: 95%;
-   height: auto;
-   margin: 0px auto;
-}
-
-.videoBoxVideo video {
-   object-fit: cover;
+ }
+ 
+ .videoBodyContainer video {
    height: 100%;
    width: 100%;
-   border-radius: 10px;
-}
-
-.videoBoxVideoDescription {
+   max-width: 100%;
+   object-fit: cover;
+ }
+ 
+ .videoActionsContainer {
    display: flex;
-   justify-content: flex-start;
-   align-items: center;
-   flex-direction: column;
-   margin-top: 7%;
-}
-
-.videoBoxVideoDescription .videoBoxVideoDescriptionHeader {
-   display: flex;
-   justify-content: flex-start;
-   align-items: center;
-   width: 95%;
-   margin: 0px auto;
-}
-
-.videoBoxVideoDescription .videoBoxVideoDescriptionHeader h1 {
-   color: #b0b0b0;
-   font-size: 19px;
-   font-family: sans-serif;
-}
-
-.videoBoxVideoDescriptionText {
-   display: flex;
-   justify-content: flex-start;
+   justify-content: center;
    align-items: flex-start;
    flex-direction: column;
-   width: 95%;
-   margin: 15px auto;
-}
-
-.videoBoxVideoDescriptionText p {
-   color: #b0b0b0;
-   font-size: 16px;
-   font-weight: 300;
-}
-
-.videoBoxVideoDescriptionText p:nth-child(2) {
-   color: #b0b0b0;
-   font-weight: 500;
-   border-bottom: 1px solid #f85a40;
-   margin-top: 10px;
-}
-
-.videoActionsContainer {
-   width: 95%;
-   margin: 10px auto;
-   gap: 20px;
-   display: grid;
-   grid-template-columns: 1fr 1fr 1fr 1fr;
-}
-
-.videoActionsContainer .action {
+   height: 100%;
+ }
+ 
+ .videoActionsContainer .action {
    display: flex;
-   flex-direction: column;
    justify-content: center;
-   align-items: center;
-}
-
-.videoActionsContainer .action .icon {
+   align-items: flex-start;
+   flex-direction: column;
+   margin-top: 10%;
+ }
+ 
+ .videoActionsContainer .action:nth-child(3) .icon {
+   background-color: #f85a40;
    color: #fff;
-   border: 2px solid #f85a40;
    border-radius: 50%;
-   font-size: 40px;
    padding: 5px;
-}
-
-.videoActionsContainer .action p {
-   color: #b0b0b0;
-   margin-top: 10px;
-   text-align: center;
-}
-
-.loadingContainer {
-   display: flex;
-   align-items: center;
-   justify-content: center;
-   flex-direction: column;
+   font-size: 2.2em;
+ }
+ 
+ .videoActionsContainer .icon {
+   color: #f85a40;
+   cursor: pointer;
+ }
+ 
+ .videoActionsContainer p {
+   color: #a7a4a4;
+ }
+ 
+ .loadingContainer {
    position: fixed;
    top: 0;
    left: 0;
-   width: 100%;
-   height: 100%;
-   background-color: rgba(0, 0, 0, 0.8);
-   z-index: 9999;
-}
-
-
-
-@media (max-width:700px) {
+   width: 100vw;
+   height: 100vh;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   background-color: rgba(0, 0, 0, 0.7);
+   z-index: 1000;
+ }
+ 
+ @media (max-width: 700px) {
+   .videoContainer {
+     height: 100%;
+   }
+ 
    .videoContent {
-      width: 93%;
+     width: 95%;
+     margin: 0 auto;
    }
-
-   .videoContentHeader h1 {
-      font-size: 15px;
-   }
-
+ 
    .videoListContent {
-      height: 80vh;
-      width: 100%;
-      margin: 10px auto;
-      overflow-y: scroll;
+     display: grid;
+     grid-template-columns: 1fr;
+     gap: 50px;
    }
-
-   .videoListContent::-webkit-scrollbar {
-      width: 0px;
-      /* Set the width of the scrollbar */
+ 
+   .videoNavigation {
+     position: absolute;
+     top: 50%;
+     left: 10px;
+     transform: translateY(-50%);
+     flex-direction: column;
+     height: auto;
+     padding: 5px;
+     border-radius: 25px;
    }
-
-   .videoListContent::-webkit-scrollbar-thumb {
-      background-color: darkgrey;
-      border-radius: 10px;
+ 
+   .videoNavigation .arrowButton {
+     background-color: #f85a40;
+     margin-top: 50%;
+     display: flex;
+     justify-content: center;
+     align-items: center;
+     border-radius: 50%;
+     padding: 5px;
+     cursor: pointer;
+     box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.4);
    }
-
-   .videoBox {
-      width: 95%;
-      margin: 3% auto;
-      box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.5);
-      padding: 7px;
-      margin-bottom: 10%;
+ 
+   .videoNavigation .arrowButton .icon {
+     font-size: 1.8em;
    }
-
-   .videoBoxHeader h1 {
-      font-size: 15px;
+ 
+   .videoActionsContainer {
+     position: absolute;
+     right: 0px;
+     top: 50%;
+     transform: translateY(-50%);
+     height: auto;
+     display: flex;
+     justify-content: center;
+     align-items: flex-end;
+     flex-direction: column;
+     padding: 5px;
+     border-radius: 25px;
    }
-
-   .videoBoxVideo video {
-      object-fit: cover;
-      height: 100%;
-      width: 100%;
+ 
+   .videoActionsContainer .action {
+     display: flex;
+     justify-content: flex-end;
+     align-items: flex-end;
+     flex-direction: column;
+     margin-top: 35%;
+     background-color: rgba(0, 0, 0, 0.4);
+     padding: 5px;
+     box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.4);
    }
-
-   .videoBoxVideoDescription {
-      margin-top: 5%;
+ 
+   .videoActionsContainer .action:nth-child(3) {
+     background-color: rgba(0, 0, 0, 0);
    }
-
-   .videoBoxVideoDescription .videoBoxVideoDescriptionHeader h1 {
-      font-size: 15px;
+ 
+   .videoActionsContainer .action:nth-child(3) .icon {
+     background-color: #f85a40;
+     color: #fff;
+     border-radius: 50%;
+     padding: 5px;
+     font-size: 2.2em;
    }
-
-   .videoBoxVideoDescriptionText {
-      width: 95%;
-      margin: 10px auto;
+ 
+   .videoActionsContainer .icon {
+     color: #f85a40;
+     cursor: pointer;
    }
-
-   .videoBoxVideoDescriptionText p {
-      font-size: 15px;
-      font-weight: 100;
+ 
+   .videoActionsContainer p {
+     color: #fff;
    }
-
-   .videoActionsContainer .action .icon {
-      border-radius: 50%;
-      font-size: 30px;
-      padding: 3px;
+ 
+   .videoBodyContainer {
+     height: 85vh;
+     margin-top: 5px;
    }
-   
-   .videoActionsContainer .action p {
-      font-size: 14px;
-   }
-   
-}
-
+ }
+ 

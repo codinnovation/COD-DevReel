@@ -1,19 +1,21 @@
 import React, { useState, useEffect } from "react";
-import styles from '@/styles/comps/video-body.module.css';
+import styles from '@/styles/comps/following.module.css';
 import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
-import SendIcon from "@mui/icons-material/Send";
 import CommentIcon from "@mui/icons-material/Comment";
-import BookmarksIcon from "@mui/icons-material/Bookmarks";
+import DownloadIcon from "@mui/icons-material/Download";
 import { ref, get, update } from "firebase/database";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 import { db } from "../../firebase.config";
 import "react-toastify/dist/ReactToastify.css";
-import FirstHeader from "../pages/comps/first-header";
+import FirstHeader from "./first-header";
 import withSession from "@/lib/session";
 import { ToastContainer, toast } from "react-toastify";
 import { useRouter } from "next/router";
-import ReactPlayer from "react-player";
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+
+
 
 function Following() {
   const router = useRouter();
@@ -22,6 +24,8 @@ function Following() {
   const [expandedDescriptions, setExpandedDescriptions] = useState({});
   const [currentUser, setCurrentUser] = useState(null);
   const [currentUserEmail, setCurrentUserEmail] = useState(null);
+  const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
+
 
   // Function to sanitize email
   const sanitizeEmail = (email) => email?.replace(/[^a-zA-Z0-9]/g, "");
@@ -130,75 +134,84 @@ function Following() {
     }
   };
 
+  const handleNextVideo = () => {
+    setCurrentVideoIndex((prevIndex) =>
+      prevIndex < videoSources.length - 1 ? prevIndex + 1 : 0
+    );
+  };
+
+  const handlePreviousVideo = () => {
+    setCurrentVideoIndex((prevIndex) =>
+      prevIndex > 0 ? prevIndex - 1 : videoSources.length - 1
+    );
+  };
+
+  const currentVideo = videoSources[currentVideoIndex];
+
   return (
     <>
-      {isLoading && (
-        <div className={styles.loadingContainer}>
-          <Box sx={{ display: "flex", flexDirection: "column" }}>
-            <CircularProgress />
-            <p style={{ color: "#fff" }}>Loading</p>
-          </Box>
+    {isLoading && (
+      <div className={styles.loadingContainer}>
+        <Box>
+          <CircularProgress />
+          <p style={{ color: "#fff" }}>Loading Videos</p>
+        </Box>
+      </div>
+    )}
+    <FirstHeader />
+    <div className={styles.videoContainer}>
+      <div className={styles.videoContent}>
+        <div className={styles.videoContentHeader}>
+          <h1 onClick={() => router.push("/my-videos")}>My Videos</h1>
+          <h1>Following</h1>
         </div>
-      )}
-      <FirstHeader />
-      <div className={styles.videoScrollContainer}>
+
         <div className={styles.videoListContainer}>
-          {videoSources.slice.map((data, index) => (
-            <div className={styles.videoItem} key={data.key || index}>
-              <div className={styles.videoContent}>
-                <ReactPlayer
-                  url={data?.videoURL}
-                  playing
-                  loop
-                  muted
-                  controls="true"
-                  width="100%"
-                  height="100%"
-                  style={{ objectFit: 'cover' }}
-                />
-                <div className={styles.videoDescription}>
-                  <div className={styles.videoDescriptionHeader}>
-                    <h1>Posted by {data?.currentUser}</h1>
-                  </div>
-                  <div className={styles.videoDescriptionText}>
-                    <p>
-                      {expandedDescriptions[index]
-                        ? data?.videoDescription
-                        : truncateText(data?.videoDescription, 20)}
-                    </p>
-                    <p
-                      onClick={() => toggleDescription(index)}
-                      className={styles.seeMore}
-                    >
-                      {expandedDescriptions[index] ? "See less" : "See more"}
-                    </p>
-                  </div>
+          {currentVideo && (
+            <div className={styles.videoListContent} key={currentVideo.key}>
+              <div className={styles.videoNavigation}>
+                <div className={styles.arrowButton} onClick={handlePreviousVideo}>
+                  <ArrowBackIcon className={styles.icon} />
                 </div>
-                <div className={styles.videoActions}>
-                  <div className={styles.action} onClick={() => handleLike(data.key)}>
-                    <ThumbUpOffAltIcon className={styles.icon} />
-                    <p>{data?.videoLikes}</p>
-                  </div>
-                  <div className={styles.action}>
-                    <CommentIcon className={styles.icon} />
-                    <p>{data?.videoComments}</p>
-                  </div>
-                  <div className={styles.action}>
-                    <BookmarksIcon className={styles.icon} />
-                    <p>{data?.videoBookmarks}</p>
-                  </div>
-                  <div className={styles.action}>
-                    <SendIcon className={styles.icon} />
-                    <p>{data?.videoShares}</p>
-                  </div>
+
+                <div className={styles.arrowButton} onClick={handleNextVideo}>
+                  <ArrowForwardIcon className={styles.icon} />
+                </div>
+              </div>
+
+              <div className={styles.videoBodyContainer}>
+                <video
+                  src={currentVideo.videoURL}
+                  controls
+                  autoPlay
+                  loop
+                  playsInline
+                  muted
+                />
+              </div>
+
+              <div className={styles.videoActionsContainer}>
+                <div className={styles.action} onClick={() => handleLike(currentVideo.key)}>
+                  <ThumbUpOffAltIcon className={styles.icon} />
+                  <p>{currentVideo.videoLikes || 0} Likes</p>
+                </div>
+
+                <div className={styles.action}>
+                  <CommentIcon className={styles.icon} />
+                  <p>{currentVideo.videoComments || 0} Comments</p>
+                </div>
+
+                <div className={styles.action}>
+                  <DownloadIcon className={styles.icon} />
                 </div>
               </div>
             </div>
-          ))}
+          )}
         </div>
       </div>
-      <ToastContainer />
-    </>
+    </div>
+    <ToastContainer />
+  </>
   );
 }
 
