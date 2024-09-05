@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import styles from '@/styles/comps/video-body.module.css';
 import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
 import CommentIcon from "@mui/icons-material/Comment";
-import DownloadIcon from "@mui/icons-material/Download";
+import DeleteIcon from '@mui/icons-material/Delete'; 
 import { ref, get, update } from "firebase/database";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
@@ -174,11 +174,23 @@ function VideoShowcase() {
                   </div>
 
                   <div className={styles.action}>
-                    <DownloadIcon className={styles.icon} />
+                    <DeleteIcon className={styles.icon} />
+                  </div>
+                </div>
+                <div className={styles.videoDescriptions}>
+                  <div className={styles.videoDescriptionsHeader}>
+                    <h1>{currentVideo?.videoHeader}</h1>
+                  </div>
+
+                  <div className={styles.videoDescriptionsText}>
+                    <p>{currentVideo?.videoDescription}</p>
                   </div>
                 </div>
               </div>
+
             )}
+
+
           </div>
         </div>
       </div>
