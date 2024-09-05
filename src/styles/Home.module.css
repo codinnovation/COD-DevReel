@@ -1,0 +1,44 @@
+.imageWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.pop {
+  width: 17%;
+  height: auto;
+  animation: pop 1s ease-in-out infinite;
+}
+
+.imageWrapper p {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #f85a40;
+  font-size: 1.7em;
+  margin-top: 20px;
+  font-weight: 700;
+  font-family: sans-serif;
+}
+
+@keyframes pop {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+@media (max-width: 700px) {
+  .pop {
+    width: 55%;
+  }
+
+  .imageWrapper p {
+    font-size: 1.5em;
+  }
+}
