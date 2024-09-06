@@ -14,6 +14,9 @@ import { ToastContainer, toast } from "react-toastify";
 import { useRouter } from "next/router";
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { TextareaAutosize } from '@mui/base/TextareaAutosize';
+import Modal from "@mui/material/Modal";
+
 
 
 
@@ -25,6 +28,16 @@ function Following() {
   const [currentUser, setCurrentUser] = useState(null);
   const [currentUserEmail, setCurrentUserEmail] = useState(null);
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
+  const [openCommentText, setOpenCommentText] = useState(false);
+
+  function handleOpenCommentText() {
+    setOpenCommentText(true);
+  }
+
+  function handleCloseOpenCommentText() {
+    setOpenCommentText(false);
+  }
+
 
 
   // Function to sanitize email
@@ -146,66 +159,93 @@ function Following() {
     );
   };
 
+  const handleDownload = (videoURL) => {
+    if (!videoURL) return;
+
+    // Create an anchor element
+    const link = document.createElement("a");
+    link.href = videoURL;
+
+    // Extract the file name from the URL or set a default file name
+    const fileName = videoURL.split("/").pop() || "video.mp4";
+    link.download = fileName;
+
+    // Append the anchor to the body
+    document.body.appendChild(link);
+
+    // Programmatically click the link to trigger the download
+    link.click();
+
+    // Remove the anchor from the document after download
+    document.body.removeChild(link);
+  };
+
   const currentVideo = videoSources[currentVideoIndex];
+
+  console.log("cur", currentVideo)
 
   return (
     <>
-    {isLoading && (
-      <div className={styles.loadingContainer}>
-        <Box>
-          <CircularProgress />
-          <p style={{ color: "#fff" }}>Loading Videos</p>
-        </Box>
-      </div>
-    )}
-    <FirstHeader />
-    <div className={styles.videoContainer}>
-      <div className={styles.videoContent}>
-        <div className={styles.videoContentHeader}>
-          <h1 onClick={() => router.push("/my-videos")}>My Videos</h1>
-          <h1>Following</h1>
+      {isLoading && (
+        <div className={styles.loadingContainer}>
+          <Box>
+            <CircularProgress />
+            <p style={{ color: "#fff" }}>Loading Videos</p>
+          </Box>
         </div>
+      )}
+      <FirstHeader />
+      <div className={styles.videoContainer}>
+        <div className={styles.videoContent}>
+          <div className={styles.videoContentHeader}>
+            <h1 onClick={() => router.push("/my-videos")}>My Videos</h1>
+            <h1>Following</h1>
+          </div>
 
-        <div className={styles.videoListContainer}>
-          {currentVideo && (
-            <div className={styles.videoListContent} key={currentVideo.key}>
-              <div className={styles.videoNavigation}>
-                <div className={styles.arrowButton} onClick={handlePreviousVideo}>
-                  <ArrowBackIcon className={styles.icon} />
+          <div className={styles.videoListContainer}>
+            {currentVideo && (
+              <div className={styles.videoListContent} key={currentVideo.key}>
+                <div className={styles.videoInformation}>
+                  <p>Posted:</p>
+                  <p>{currentVideo?.displayName || ""}</p>
+                </div>
+                <div className={styles.videoNavigation}>
+                  <div className={styles.arrowButton} onClick={handlePreviousVideo}>
+                    <ArrowBackIcon className={styles.icon} />
+                  </div>
+
+                  <div className={styles.arrowButton} onClick={handleNextVideo}>
+                    <ArrowForwardIcon className={styles.icon} />
+                  </div>
                 </div>
 
-                <div className={styles.arrowButton} onClick={handleNextVideo}>
-                  <ArrowForwardIcon className={styles.icon} />
-                </div>
-              </div>
-
-              <div className={styles.videoBodyContainer}>
-                <video
-                  src={currentVideo.videoURL}
-                  controls
-                  autoPlay
-                  loop
-                  playsInline
-                  muted
-                />
-              </div>
-
-              <div className={styles.videoActionsContainer}>
-                <div className={styles.action} onClick={() => handleLike(currentVideo.key)}>
-                  <ThumbUpOffAltIcon className={styles.icon} />
-                  <p>{currentVideo.videoLikes || 0} Likes</p>
+                <div className={styles.videoBodyContainer}>
+                  <video
+                    src={currentVideo.videoURL}
+                    controls
+                    autoPlay
+                    loop
+                    playsInline
+                    muted
+                  />
                 </div>
 
-                <div className={styles.action}>
-                  <CommentIcon className={styles.icon} />
-                  <p>{currentVideo.videoComments || 0} Comments</p>
-                </div>
+                <div className={styles.videoActionsContainer}>
+                  <div className={styles.action} onClick={() => handleLike(currentVideo.key)}>
+                    <ThumbUpOffAltIcon className={styles.icon} />
+                    <p>{currentVideo.videoLikes || 0} Likes</p>
+                  </div>
 
-                <div className={styles.action}>
-                  <DownloadIcon className={styles.icon} />
+                  <div className={styles.action} onClick={handleOpenCommentText}>
+                    <CommentIcon className={styles.icon} />
+                    <p>{currentVideo.videoComments || 0} Comments</p>
+                  </div>
+
+                  <div className={styles.action} onClick={() => handleDownload(currentVideo.videoURL)}>
+                    <DownloadIcon className={styles.icon} />
+                  </div>
                 </div>
-              </div>
-              <div className={styles.videoDescriptions}>
+                <div className={styles.videoDescriptions}>
                   <div className={styles.videoDescriptionsHeader}>
                     <h1>{currentVideo?.videoHeader}</h1>
                   </div>
@@ -214,13 +254,29 @@ function Following() {
                     <p>{currentVideo?.videoDescription}</p>
                   </div>
                 </div>
-            </div>
-          )}
+              </div>
+            )}
+          </div>
         </div>
       </div>
-    </div>
-    <ToastContainer />
-  </>
+
+      {openCommentText && (
+        <>
+          <Modal
+            open={handleOpenCommentText}
+            onClose={handleCloseOpenCommentText}
+            aria-labelledby="user-profile-modal"
+            aria-describedby="modal-to-display-user-profile-details"
+          >
+            <Box className={styles.modalStyle}>
+              <TextareaAutosize  minRows={5}/>
+              <button>Comment</button>
+            </Box>
+          </Modal>
+        </>
+      )}
+      <ToastContainer />
+    </>
   );
 }
 

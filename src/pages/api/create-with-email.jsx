@@ -1,10 +1,10 @@
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, updateProfile, updatePhoneNumber } from "firebase/auth";
 import withSession from "@/lib/session";
 import { auth } from "../../../firebase.config";
 
 export default withSession(async function handler(req, res) {
   if (req.method === "POST") {
-    const { email, password } = req.body;
+    const { email, password, name } = req.body;
 
     try {
       const userCredential = await createUserWithEmailAndPassword(
@@ -13,9 +13,12 @@ export default withSession(async function handler(req, res) {
         password
       );
 
+      await updateProfile(userCredential.user, {displayName: name})
+
       const user = {
         id: userCredential.user.id,
         email: userCredential.user.email,
+        displayName: userCredential.displayName,
       };
 
       req.session.set("user", user);

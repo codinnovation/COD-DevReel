@@ -39,7 +39,6 @@
    align-items: center;
    flex-direction: column;
    color: #fff;
-   height: 100%;
  }
  
  .videoNavigation .arrowButton {
@@ -166,6 +165,38 @@
 .videoDescriptionsText::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
+
+.videoInformation{
+  position: absolute;
+  color: #b1afaf;
+  display: flex;
+  margin-top: 10px;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modalStyle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: auto;
+  background-color: white;
+  box-shadow: 0px 0px 30px #008374;
+  box-shadow: 24;
+  padding: 16px;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+}
+
+.modalStyle button{
+  margin-top: 10px;
+  height: 45px;
+  background-color: #f85a40;
+  color: #fff;
+  border: none;
+}
+
 
  
  @media (max-width: 700px) {
