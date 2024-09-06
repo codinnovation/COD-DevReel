@@ -101,6 +101,11 @@
   border-radius: 5px;
 }
 
+.modalStyle p{
+  text-align: center;
+  font-family: sans-serif;
+}
+
 
 .modalStyle .userButtons {
   display: flex;

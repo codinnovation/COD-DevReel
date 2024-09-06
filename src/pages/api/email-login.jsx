@@ -14,8 +14,8 @@ export default withSession(async function handler(req, res) {
       );
 
       const user = {
-        id: userCredential.user.id,
         email: userCredential.user.email,
+        displayName: userCredential.user.displayName,
       };
 
       req.session.set("user", user);

@@ -15,6 +15,7 @@ function Email() {
   const [userDetails, setUserDetails] = useState({
     email: "",
     password: "",
+    name: "",
   });
 
   function signUpPage() {
@@ -56,6 +57,7 @@ function Email() {
     let data = {
       email: userDetails.email,
       password: userDetails.password,
+      name: userDetails.name,
     };
 
     try {
@@ -70,12 +72,12 @@ function Email() {
       if (response.ok) {
         toast.success("Account created successfully");
         setIsLinkClicked(false);
-        console.log(response)
-
+        setUserDetails("");
+        router.push("/login?r=1&redirect=");
       } else {
         setIsLinkClicked(false);
         toast.error("Error creating account");
-        console.log(response)
+        console.log(response);
       }
     } catch (err) {
       toast.error("Error creating account", err.message);
@@ -115,6 +117,17 @@ function Email() {
 
             <div className={styles.loginForm}>
               <form onSubmit={handleCreateAccount}>
+                <div className={styles.inputField}>
+                  <label>Your Name</label>
+                  <input
+                    type="text"
+                    placeholder="Kwabena Asumadu"
+                    name="name"
+                    value={userDetails.name}
+                    onChange={handleInputChange}
+                  />
+                </div>
+
                 <div className={styles.inputField}>
                   <label>Email Address</label>
                   <input

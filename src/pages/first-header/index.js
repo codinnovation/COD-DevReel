@@ -25,6 +25,7 @@ function Index() {
   const [openVideoForm, setOpenVideoForm] = useState(false);
   const [currentUserEmail, setCurrentUserEmail] = useState(null);
 
+
   // Function to sanitize email
   const sanitizeEmail = (email) => {
     return email.replace(/[^a-zA-Z0-9]/g, "");
@@ -64,7 +65,6 @@ function Index() {
     videoURL: "",
     videoComments: "",
     videoLikes: "",
-    videoViews: "",
   });
 
   const handleInputChange = (e) => {
@@ -114,6 +114,7 @@ function Index() {
             ...videoForm,
             videoURL: downloadURL,
             currentUser: sanitizedEmail,
+            displayName: currentUser?.user?.displayName,
           };
 
           // Save video information to Realtime Database
@@ -126,7 +127,6 @@ function Index() {
             videoURL: "",
             videoComments: "",
             videoLikes: "",
-            videoShares: "",
           });
         } catch (error) {
           toast.error("Error saving video data");
@@ -228,6 +228,7 @@ function Index() {
         aria-describedby="modal-to-display-user-profile-details"
       >
         <Box className={styles.modalStyle}>
+          <p>{currentUser?.user?.displayName}</p>
           <div className={styles.userButtons}>
             <button onClick={handleOpenVideoForm}>Add Video</button>
             <button>Profile</button>
