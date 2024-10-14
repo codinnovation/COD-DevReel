@@ -195,6 +195,7 @@ function Index() {
 
           <div className={styles.userProfile}>
             {currentUser?.user?.photoURL ? (
+              // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={currentUser?.user?.photoURL}
                 className={styles.image}
